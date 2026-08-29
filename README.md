@@ -15,6 +15,7 @@ Kwenchr is a modern Next.js web application designed to help users find and expl
 - **Promoter Dashboard**: Registered users can publish, edit, and manage their hosted events and bar specials.
 - **Custom Vector Icon Font**: Automatic build script to bundle SVG icons into a custom lightweight webfont stylesheet.
 - **Ad Integrations**: Pre-configured responsive banner and skyscraper ad components.
+- **Comprehensive Testing Suite**: Fully tested code architecture including React components, Next.js page layouts, API routes, database utilities, and Mongoose schemas.
 
 ---
 
@@ -25,6 +26,7 @@ Kwenchr is a modern Next.js web application designed to help users find and expl
 - **Database / ORM**: [Mongoose](https://mongoosejs.com/) / [MongoDB](https://www.mongodb.com/)
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
 - **Icon Builder**: [svgtofont](https://github.com/jaywcjlove/svgtofont)
+- **Testing**: [Vitest](https://vitest.dev/) & [React Testing Library](https://testing-library.com/)
 
 ---
 
@@ -76,6 +78,20 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser to view the application.
 
+### 7. Run the Test Suite
+
+Run unit and integration tests using Vitest:
+
+```bash
+npm run test
+```
+
+To run tests in watch mode for development:
+
+```bash
+npm run test:watch
+```
+
 ---
 
 ## 📂 Project Structure
@@ -85,17 +101,18 @@ kwenchr/
 ├── public/                 # Static assets (including compiled fonts)
 ├── scripts/                # Build and utility scripts (seeding, font compiler)
 ├── src/
-│   ├── app/                # Next.js App Router (pages and API endpoints)
+│   ├── app/                # Next.js App Router and API routes (colocated with page/route tests)
 │   │   ├── api/            # API Route Handlers (events, auth, profile)
 │   │   ├── layout.js       # Main Root Layout
 │   │   └── page.js         # Entry Home Route (MainDashboard)
 │   ├── assets/             # Asset files
 │   │   └── icons/          # Raw SVG icons (compiled to webfont)
-│   ├── components/         # Reusable React components (Dashboard, Filters, Ads)
+│   ├── components/         # Reusable React components and unit tests
 │   ├── data/               # Static/fallback mock data
-│   ├── lib/                # Database connection and seeding data templates
-│   ├── models/             # Mongoose schemas (User, Event)
+│   ├── lib/                # Database connection, seeding utilities, and tests
+│   ├── models/             # Mongoose schemas and model tests
 │   └── styles/             # Application styles (globals.css, compiled fonts.css)
+├── tests/                  # Test framework environment setup (setup.js)
 ├── eslint.config.mjs       # ESLint configuration
 └── package.json            # Scripts and dependency lists
 ```
@@ -114,4 +131,6 @@ In the project directory, you can run:
 | `npm run lint` | Runs ESLint to check for code issues. |
 | `npm run seed` | Runs the standalone Mongoose script to seed database collections. |
 | `npm run build:icons` | Compiles raw SVGs from `src/assets/icons` into standard webfonts. |
+| `npm run test` | Runs the Vitest test suite once. |
+| `npm run test:watch` | Starts Vitest in interactive watch mode. |
 
