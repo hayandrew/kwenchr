@@ -63,6 +63,66 @@ describe('MainDashboard Component', () => {
       expect(screen.getByText('Irish Pub Happy Hour')).toBeInTheDocument()
       expect(screen.getByText('Standup Comedy Night')).toBeInTheDocument()
     })
+
+    // Verify initial request fetched only 10 items via page=1&limit=10
+    expect(global.fetch).toHaveBeenCalledWith('/api/events?page=1&limit=10', undefined)
+  })
+
+  it('fetches next 10 events from API when infinite scroll triggers', async () => {
+    const todayStr = moment().format('YYYY-MM-DD')
+    const page1Events = Array.from({ length: 10 }, (_, i) => ({
+      _id: `event-${i + 1}`,
+      name: `Special ${i + 1}`,
+      short_description: `Desc ${i + 1}`,
+      start_time: `${todayStr}T17:00:00.000Z`,
+      end_time: `${todayStr}T20:00:00.000Z`,
+      venue_location: '40.7796,-74.0238'
+    }))
+
+    const page2Events = [
+      {
+        _id: 'event-11',
+        name: 'Page 2 Special',
+        short_description: 'Loaded via infinite scroll',
+        start_time: `${todayStr}T17:00:00.000Z`,
+        end_time: `${todayStr}T20:00:00.000Z`,
+        venue_location: '40.7796,-74.0238'
+      }
+    ]
+
+    global.fetch = vi.fn().mockImplementation((url) => {
+      if (url.includes('page=2')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(page2Events),
+          clone: function() { return this; }
+        })
+      }
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve(page1Events),
+        clone: function() { return this; }
+      })
+    })
+
+    render(<MainDashboard />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Special 1')).toBeInTheDocument()
+      expect(screen.getByText('Special 10')).toBeInTheDocument()
+    })
+
+    // Simulate scrolling center-column near the bottom
+    const centerCol = document.querySelector('.center-column')
+    Object.defineProperty(centerCol, 'scrollHeight', { value: 1000, configurable: true })
+    Object.defineProperty(centerCol, 'clientHeight', { value: 500, configurable: true })
+    centerCol.scrollTop = 450 // 1000 - 450 - 500 = 50 < 150
+    fireEvent.scroll(centerCol)
+
+    await waitFor(() => {
+      expect(global.fetch).toHaveBeenCalledWith('/api/events?page=2&limit=10', undefined)
+      expect(screen.getByText('Page 2 Special')).toBeInTheDocument()
+    })
   })
 
   it('filters events by type selection', async () => {

@@ -14,13 +14,15 @@ import dedupeFetch from './utilities/dedupeFetch'
 let cachedAllEvents = null
 let cachedScrollTop = 0
 let cachedCurrentDate = null
-let cachedVisibleCount = 10
+let cachedPage = 1
+let cachedHasMore = true
 
 export function clearDashboardCache() {
   cachedAllEvents = null
   cachedScrollTop = 0
   cachedCurrentDate = null
-  cachedVisibleCount = 10
+  cachedPage = 1
+  cachedHasMore = true
 }
 
 export default function MainDashboard({ children }) {
@@ -32,10 +34,34 @@ export default function MainDashboard({ children }) {
   const [maxDistance, setMaxDistance] = useState('all')
   const [allEvents, setAllEvents] = useState(() => cachedAllEvents || [])
   const [userCoords, setUserCoords] = useState({ lat: 40.7796, lng: -74.0238 })
-  const [visibleCount, setVisibleCount] = useState(() => cachedVisibleCount || 10)
+  const [page, setPage] = useState(() => cachedPage || 1)
+  const [hasMore, setHasMore] = useState(() => (cachedHasMore !== null ? cachedHasMore : true))
   const [isLoadingMore, setIsLoadingMore] = useState(false)
 
-  // Memorize, filter, and sort events by closest distance synchronously
+  // Helper to calculate distance to venue
+  const getDistanceToVenue = React.useCallback((event, coords) => {
+    if (event.venue && event.venue.location) {
+      const parts = event.venue.location.split(',')
+      if (parts.length === 2) {
+        const venueLat = parseFloat(parts[0])
+        const venueLng = parseFloat(parts[1])
+        if (!isNaN(venueLat) && !isNaN(venueLng)) {
+          return getDistanceKm(coords.lat, coords.lng, venueLat, venueLng)
+        }
+      }
+    }
+    return Infinity
+  }, [])
+
+  const sortBatchByDistance = React.useCallback((batch, coords) => {
+    return [...batch].sort((a, b) => {
+      const distA = getDistanceToVenue(a, coords)
+      const distB = getDistanceToVenue(b, coords)
+      return distA - distB
+    })
+  }, [getDistanceToVenue])
+
+  // Filter events by date, category, and distance threshold without re-sorting across batches
   const sortedEvents = React.useMemo(() => {
     let filtered = [...allEvents]
 
@@ -68,92 +94,82 @@ export default function MainDashboard({ children }) {
     if (maxDistance !== 'all') {
       const maxDistKm = parseFloat(maxDistance) * 1.60934
       filtered = filtered.filter(event => {
-        let distance = Infinity
-        if (event.venue && event.venue.location) {
-          const parts = event.venue.location.split(',')
-          if (parts.length === 2) {
-            const venueLat = parseFloat(parts[0])
-            const venueLng = parseFloat(parts[1])
-            if (!isNaN(venueLat) && !isNaN(venueLng)) {
-              distance = getDistanceKm(userCoords.lat, userCoords.lng, venueLat, venueLng)
-            }
-          }
-        }
-        return distance <= maxDistKm
+        const dist = getDistanceToVenue(event, userCoords)
+        return dist <= maxDistKm
       })
     }
 
-    // 4. Sort by closest distance
-    const eventsWithDistance = filtered.map(event => {
-      let distance = Infinity
-      if (event.venue && event.venue.location) {
-        const parts = event.venue.location.split(',')
-        if (parts.length === 2) {
-          const venueLat = parseFloat(parts[0])
-          const venueLng = parseFloat(parts[1])
-          if (!isNaN(venueLat) && !isNaN(venueLng)) {
-            distance = getDistanceKm(userCoords.lat, userCoords.lng, venueLat, venueLng)
-          }
-        }
-      }
-      return { ...event, _distance: distance }
-    })
+    return filtered
+  }, [allEvents, currentDate, eventType, maxDistance, userCoords, getDistanceToVenue])
 
-    return eventsWithDistance.sort((a, b) => a._distance - b._distance)
-  }, [allEvents, currentDate, eventType, maxDistance, userCoords])
-
+  // Fetch initial 10 events from API
   useEffect(() => {
     let isCancelled = false
-    const loadEvents = async () => {
-      try {
-        const res = await dedupeFetch('/api/events')
-        if (res.ok && !isCancelled) {
-          const rawEvents = await res.json()
-          const mapped = rawEvents.map(mapDbEventToClient)
-          cachedAllEvents = mapped
-          setAllEvents(mapped)
-        } else if (!res.ok) {
-          console.error('Failed to load events from database API')
+    if (!cachedAllEvents) {
+      const loadInitialEvents = async () => {
+        try {
+          const res = await dedupeFetch('/api/events?page=1&limit=10')
+          if (res.ok && !isCancelled) {
+            const rawEvents = await res.json()
+            const mapped = rawEvents.map(mapDbEventToClient)
+            const sorted = sortBatchByDistance(mapped, userCoords)
+            cachedAllEvents = sorted
+            cachedPage = 1
+            const more = rawEvents.length === 10
+            cachedHasMore = more
+            setAllEvents(sorted)
+            setPage(1)
+            setHasMore(more)
+          } else if (!res.ok) {
+            console.error('Failed to load events from database API')
+          }
+        } catch (e) {
+          console.error('Error fetching events:', e)
         }
-      } catch (e) {
-        console.error('Error fetching events:', e)
       }
+
+      loadInitialEvents()
     }
 
-    loadEvents()
     return () => {
       isCancelled = true
     }
-  }, [])
+  }, [sortBatchByDistance, userCoords])
 
-  const isRestoringRef = React.useRef(false)
-  const loadMoreTimeoutRef = React.useRef(null)
-  useEffect(() => {
-    return () => {
-      if (loadMoreTimeoutRef.current) {
-        clearTimeout(loadMoreTimeoutRef.current)
-      }
-    }
-  }, [])
-
-  const loadMore = React.useCallback(() => {
-    if (isLoadingMore) return
-    if (visibleCount >= sortedEvents.length) return
+  // Fetch next 10 events from API on infinite scroll and append below
+  const loadMore = React.useCallback(async () => {
+    if (isLoadingMore || !hasMore) return
     setIsLoadingMore(true)
-    loadMoreTimeoutRef.current = setTimeout(() => {
-      setVisibleCount(prev => {
-        const next = prev + 10
-        cachedVisibleCount = next
-        return next
-      })
+    const nextPage = page + 1
+    try {
+      const res = await dedupeFetch(`/api/events?page=${nextPage}&limit=10`)
+      if (res.ok) {
+        const rawEvents = await res.json()
+        const mapped = rawEvents.map(mapDbEventToClient)
+        const sortedNext = sortBatchByDistance(mapped, userCoords)
+        setAllEvents(prev => {
+          const existingIds = new Set(prev.map(e => e.mgid || e._id || e.id))
+          const uniqueNext = sortedNext.filter(e => !existingIds.has(e.mgid || e._id || e.id))
+          const next = [...prev, ...uniqueNext]
+          cachedAllEvents = next
+          return next
+        })
+        setPage(nextPage)
+        cachedPage = nextPage
+        const more = rawEvents.length === 10
+        setHasMore(more)
+        cachedHasMore = more
+      }
+    } catch (err) {
+      console.error('Error loading more events:', err)
+    } finally {
       setIsLoadingMore(false)
-    }, 400)
-  }, [isLoadingMore, visibleCount, sortedEvents.length])
+    }
+  }, [isLoadingMore, hasMore, page, sortBatchByDistance, userCoords])
 
   // Track scroll position on the actual scrollable containers (.center-column on desktop, .main-content-left on mobile)
   useEffect(() => {
     const handleScroll = (e) => {
-      if (isRestoringRef.current) return
       if (!children && e.target && typeof e.target.scrollTop === 'number') {
         if (e.target.scrollTop > 0) {
           cachedScrollTop = e.target.scrollTop
@@ -177,10 +193,9 @@ export default function MainDashboard({ children }) {
     }
   }, [children, loadMore])
 
-  // Restore scroll position on the container when mounted or when sortedEvents change
+  // Restore scroll position on the container only on initial mount if returning from an event page
   useEffect(() => {
     if (cachedScrollTop > 0) {
-      isRestoringRef.current = true
       const restore = () => {
         if (centerColRef.current && centerColRef.current.scrollTop !== cachedScrollTop) {
           centerColRef.current.scrollTop = cachedScrollTop
@@ -193,27 +208,21 @@ export default function MainDashboard({ children }) {
       const raf = requestAnimationFrame(restore)
       return () => cancelAnimationFrame(raf)
     }
-  }, [sortedEvents])
+  }, [])
 
   const updateDate = (date) => {
     cachedCurrentDate = date
     setCurrentDate(date)
-    cachedVisibleCount = 10
-    setVisibleCount(10)
     if (typeof window !== 'undefined') {
       sessionStorage.setItem('kwenchr_current_date', date.format('YYYY-MM-DD'))
     }
   }
 
   const handleTypeChange = (selectedTypes) => {
-    cachedVisibleCount = 10
-    setVisibleCount(10)
     setEventType(selectedTypes)
   }
 
   const handleDistanceChange = (distance) => {
-    cachedVisibleCount = 10
-    setVisibleCount(10)
     setMaxDistance(distance)
   }
 
@@ -257,8 +266,8 @@ export default function MainDashboard({ children }) {
               </div>
 
               <EventsList
-                events={sortedEvents.slice(0, visibleCount)}
-                hasMore={visibleCount < sortedEvents.length}
+                events={sortedEvents}
+                hasMore={hasMore}
                 isLoadingMore={isLoadingMore}
                 onLoadMore={loadMore}
               />

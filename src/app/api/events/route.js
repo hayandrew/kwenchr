@@ -19,14 +19,11 @@ export async function GET(request) {
       }
     }
 
-    if (page && limit) {
-      const skip = (page - 1) * limit
-      const events = await Events.find({}).skip(skip).limit(limit)
-      return NextResponse.json(events)
-    }
-
-    if (limit) {
-      const events = await Events.find({}).limit(limit)
+    if (page || limit) {
+      const p = page || 1
+      const l = limit || 10
+      const skip = (p - 1) * l
+      const events = await Events.find({}).skip(skip).limit(l)
       return NextResponse.json(events)
     }
 
