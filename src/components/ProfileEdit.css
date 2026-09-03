@@ -1,0 +1,100 @@
+.profile-edit-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.profile-edit-loading {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.profile-edit-loading .profile-edit-spinner {
+  font-size: 24px;
+  color: var(--accent-purple);
+  margin-bottom: 10px;
+}
+
+.profile-edit-restricted {
+  padding: 30px;
+  text-align: center;
+}
+
+.profile-edit-restricted p {
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+}
+
+.profile-edit-restricted__actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.profile-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.profile-edit-avatar-section {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.profile-edit-avatar-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--accent-purple);
+  background-image: url('/images/default_person.jpg');
+  background-size: cover;
+  background-position: center;
+  margin: 0 auto 12px;
+  border: 2px solid var(--accent-gold);
+}
+
+.profile-edit-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.profile-edit-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.profile-edit-input {
+  width: 100%;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: white;
+  padding: 10px 14px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.profile-edit-input:focus {
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 0 2px var(--accent-purple-glow);
+}
+
+.profile-edit-password-section {
+  border-top: 1px solid var(--border-color);
+  margin-top: 10px;
+  padding-top: 15px;
+}
+
+.profile-edit-password-title {
+  font-size: 12px;
+  color: var(--accent-purple);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
+}

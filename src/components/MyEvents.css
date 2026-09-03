@@ -1,0 +1,9 @@
+.my-events-container {
+  padding: 5px 0;
+}
+
+.my-events-subtitle {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin-bottom: 15px;
+}

@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
+import "./Places.css";
 
 export default function Places({ onLocationChange }) {
   const [address, setAddress] = useState("");
@@ -286,22 +287,8 @@ export default function Places({ onLocationChange }) {
                 handleUseCurrentLocation();
               }}
               onMouseEnter={() => setActiveSuggestionIndex(0)}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                borderBottom: "1px solid var(--border-color)",
-                color:
-                  activeSuggestionIndex === 0 ? "white" : "var(--accent-gold)",
-                fontWeight: "600",
-                padding: "10px 14px",
-                cursor: "pointer",
-              }}
             >
-              <i
-                className="icon icon-map-marker-alt"
-                style={{ fontSize: "14px" }}
-              />
+              <i className="icon icon-map-marker-alt location-icon" />
               <span>Use Current Location</span>
             </div>
 
@@ -325,7 +312,7 @@ export default function Places({ onLocationChange }) {
                   onMouseEnter={() => setActiveSuggestionIndex(index + 1)}
                 >
                   <strong>{mainText}</strong>{" "}
-                  <small style={{ color: "var(--text-muted)" }}>
+                  <small className="suggestion-secondary-text">
                     {secondaryText}
                   </small>
                 </div>
@@ -346,14 +333,7 @@ export default function Places({ onLocationChange }) {
       </div>
 
       {errorMessage.length > 0 && (
-        <div
-          className="Demo__error-message"
-          style={{
-            color: "hsl(0, 75%, 50%)",
-            fontSize: "12px",
-            marginTop: "6px",
-          }}
-        >
+        <div className="Demo__error-message">
           {errorMessage}
         </div>
       )}

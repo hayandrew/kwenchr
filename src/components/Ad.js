@@ -1,4 +1,5 @@
 import React from "react";
+import "./Ad.css";
 
 export default function Ad({ extClass, width, height }) {
   return (
@@ -8,11 +9,6 @@ export default function Ad({ extClass, width, height }) {
         style={{
           width: `${width}px`,
           height: `${height}px`,
-          maxWidth: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "rgba(255,255,255,0.03)",
         }}
       >
         <div className="ad-inner">

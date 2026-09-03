@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Overlay from "./Overlay";
 import { showToast } from "./Toast";
+import "./SignUp.css";
 
 export default function SignUp() {
   const router = useRouter();
@@ -62,7 +63,7 @@ export default function SignUp() {
   };
 
   const buttons = (
-    <div style={{ display: "flex", gap: "10px" }}>
+    <div className="signup-buttons">
       <button
         type="button"
         className="btn btn-secondary"
@@ -83,35 +84,16 @@ export default function SignUp() {
 
   return (
     <Overlay title="Create Account" buttons={buttons}>
-      <form
-        onSubmit={handleRegister}
-        style={{ display: "flex", flexDirection: "column", gap: "20px" }}
-      >
+      <form onSubmit={handleRegister} className="signup-form">
         {errorMsg && (
-          <div
-            style={{
-              background: "rgba(235, 87, 87, 0.1)",
-              border: "1px solid #eb5757",
-              borderRadius: "6px",
-              color: "#eb5757",
-              padding: "10px 14px",
-              fontSize: "13px",
-            }}
-          >
+          <div className="signup-error-alert">
             {errorMsg}
           </div>
         )}
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <div className="signup-fields">
           <div>
-            <label
-              style={{
-                fontSize: "12px",
-                color: "var(--text-secondary)",
-                display: "block",
-                marginBottom: "4px",
-              }}
-            >
+            <label className="signup-label">
               Username
             </label>
             <input
@@ -120,28 +102,12 @@ export default function SignUp() {
               onChange={(e) => setUsername(e.target.value)}
               placeholder="e.g. bartender_pro"
               required
-              style={{
-                width: "100%",
-                background: "var(--bg-primary)",
-                border: "1px solid var(--border-color)",
-                borderRadius: "6px",
-                color: "white",
-                padding: "10px 14px",
-                fontSize: "16px",
-                outline: "none",
-              }}
+              className="signup-input"
             />
           </div>
 
           <div>
-            <label
-              style={{
-                fontSize: "12px",
-                color: "var(--text-secondary)",
-                display: "block",
-                marginBottom: "4px",
-              }}
-            >
+            <label className="signup-label">
               Email Address
             </label>
             <input
@@ -150,28 +116,12 @@ export default function SignUp() {
               onChange={(e) => setEmail(e.target.value)}
               placeholder="e.g. user@example.com"
               required
-              style={{
-                width: "100%",
-                background: "var(--bg-primary)",
-                border: "1px solid var(--border-color)",
-                borderRadius: "6px",
-                color: "white",
-                padding: "10px 14px",
-                fontSize: "16px",
-                outline: "none",
-              }}
+              className="signup-input"
             />
           </div>
 
           <div>
-            <label
-              style={{
-                fontSize: "12px",
-                color: "var(--text-secondary)",
-                display: "block",
-                marginBottom: "4px",
-              }}
-            >
+            <label className="signup-label">
               Password
             </label>
             <input
@@ -180,28 +130,12 @@ export default function SignUp() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Min 6 characters recommended"
               required
-              style={{
-                width: "100%",
-                background: "var(--bg-primary)",
-                border: "1px solid var(--border-color)",
-                borderRadius: "6px",
-                color: "white",
-                padding: "10px 14px",
-                fontSize: "16px",
-                outline: "none",
-              }}
+              className="signup-input"
             />
           </div>
 
           <div>
-            <label
-              style={{
-                fontSize: "12px",
-                color: "var(--text-secondary)",
-                display: "block",
-                marginBottom: "4px",
-              }}
-            >
+            <label className="signup-label">
               Confirm Password
             </label>
             <input
@@ -210,33 +144,14 @@ export default function SignUp() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Re-enter your password"
               required
-              style={{
-                width: "100%",
-                background: "var(--bg-primary)",
-                border: "1px solid var(--border-color)",
-                borderRadius: "6px",
-                color: "white",
-                padding: "10px 14px",
-                fontSize: "16px",
-                outline: "none",
-              }}
+              className="signup-input"
             />
           </div>
         </div>
 
-        <div
-          style={{
-            fontSize: "13px",
-            color: "var(--text-secondary)",
-            textAlign: "center",
-            marginTop: "10px",
-          }}
-        >
+        <div className="signup-switch-link">
           Already have an account?{" "}
-          <Link
-            href="/sign-in"
-            style={{ color: "var(--accent-gold)", fontWeight: "bold" }}
-          >
+          <Link href="/sign-in">
             Sign In
           </Link>
         </div>

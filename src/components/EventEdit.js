@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Overlay from './Overlay'
 import Datepicker from 'react-datepicker'
+import './EventEdit.css'
 
 export default function EventEdit({ mgid }) {
   const router = useRouter()
@@ -143,7 +144,7 @@ export default function EventEdit({ mgid }) {
   }
 
   const buttons = (
-    <div style={{ display: 'flex', gap: '10px' }}>
+    <div className="event-edit-buttons">
       <button type="button" className="btn btn-secondary" onClick={() => router.push('/')}>
         Cancel
       </button>
@@ -156,11 +157,11 @@ export default function EventEdit({ mgid }) {
   if (authChecked && !isLoggedIn) {
     return (
       <Overlay title="Access Restricted">
-        <div style={{ padding: '30px', textAlign: 'center' }}>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '20px' }}>
+        <div className="event-edit-restricted">
+          <p>
             You must be logged in to create or edit drink specials.
           </p>
-          <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+          <div className="event-edit-restricted__actions">
             <button className="btn btn-secondary" onClick={() => router.push('/')}>
               Go Back
             </button>
@@ -175,195 +176,128 @@ export default function EventEdit({ mgid }) {
 
   return (
     <Overlay title={isEdit ? 'Edit Drink Special' : 'Create Drink Special'} buttons={buttons}>
-      <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <form onSubmit={handleSave} className="event-edit-form">
         
         {/* SECTION 1: EVENT GENERAL INFO */}
-        <div>
-          <h4 style={{ fontSize: '13px', color: 'var(--accent-purple)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px' }}>
+        <div className="event-edit-section">
+          <h4 className="event-edit-section__title event-edit-section__title--purple">
             Event Information
           </h4>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div className="event-edit-fields">
             <div>
-              <label style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>Event Title</label>
+              <label className="event-edit-label">Event Title</label>
               <input 
                 type="text" 
                 value={eventName} 
                 onChange={e => setEventName(e.target.value)} 
                 placeholder="e.g. 2-for-1 Margarita Madness"
                 required
-                style={{
-                  width: '100%',
-                  background: 'var(--bg-primary)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: '6px',
-                  color: 'white',
-                  padding: '10px 14px',
-                  fontSize: '14px',
-                  outline: 'none'
-                }}
+                className="event-edit-input"
               />
             </div>
             
             <div>
-              <label style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>Short Description</label>
+              <label className="event-edit-label">Short Description</label>
               <input 
                 type="text" 
                 value={shortDesc} 
                 onChange={e => setShortDesc(e.target.value)} 
                 placeholder="e.g. $5 Drafts and $6 Well Drinks all night"
                 required
-                style={{
-                  width: '100%',
-                  background: 'var(--bg-primary)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: '6px',
-                  color: 'white',
-                  padding: '10px 14px',
-                  fontSize: '14px',
-                  outline: 'none'
-                }}
+                className="event-edit-input"
               />
             </div>
 
             <div>
-              <label style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>Long Description</label>
+              <label className="event-edit-label">Long Description</label>
               <textarea 
                 value={longDesc} 
                 onChange={e => setLongDesc(e.target.value)} 
                 placeholder="Describe your drink specials, rules, menu, and any additional cost detail..."
                 rows={3}
-                style={{
-                  width: '100%',
-                  background: 'var(--bg-primary)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: '6px',
-                  color: 'white',
-                  padding: '10px 14px',
-                  fontSize: '14px',
-                  outline: 'none',
-                  resize: 'none',
-                  fontFamily: 'inherit'
-                }}
+                className="event-edit-textarea"
               />
             </div>
           </div>
         </div>
 
         {/* SECTION 2: VENUE DETAILS */}
-        <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '15px' }}>
-          <h4 style={{ fontSize: '13px', color: 'var(--accent-gold)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px' }}>
+        <div className="event-edit-section">
+          <h4 className="event-edit-section__title event-edit-section__title--gold">
             Venue Details
           </h4>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <div className="event-edit-fields">
             <div>
-              <label style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>Venue Name</label>
+              <label className="event-edit-label">Venue Name</label>
               <input 
                 type="text" 
                 value={venueName} 
                 onChange={e => setVenueName(e.target.value)} 
                 placeholder="e.g. The Duplex Piano Bar"
                 required
-                style={{
-                  width: '100%',
-                  background: 'var(--bg-primary)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: '6px',
-                  color: 'white',
-                  padding: '10px 14px',
-                  fontSize: '14px',
-                  outline: 'none'
-                }}
+                className="event-edit-input"
               />
             </div>
 
             <div>
-              <label style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>Street Address</label>
+              <label className="event-edit-label">Street Address</label>
               <input 
                 type="text" 
                 value={address} 
                 onChange={e => setAddress(e.target.value)} 
                 placeholder="e.g. 61 Christopher St, New York, NY 10014"
                 required
-                style={{
-                  width: '100%',
-                  background: 'var(--bg-primary)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: '6px',
-                  color: 'white',
-                  padding: '10px 14px',
-                  fontSize: '14px',
-                  outline: 'none'
-                }}
+                className="event-edit-input"
               />
             </div>
 
             <div>
-              <label style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>Venue / Special Image URL</label>
+              <label className="event-edit-label">Venue / Special Image URL</label>
               <input 
                 type="text" 
                 value={imageUrl} 
                 onChange={e => setImageUrl(e.target.value)} 
                 placeholder="e.g. https://example.com/bar-special.jpg"
-                style={{
-                  width: '100%',
-                  background: 'var(--bg-primary)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: '6px',
-                  color: 'white',
-                  padding: '10px 14px',
-                  fontSize: '14px',
-                  outline: 'none'
-                }}
+                className="event-edit-input"
               />
             </div>
           </div>
         </div>
 
         {/* SECTION 3: TIME & RECURRENCE */}
-        <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '15px' }}>
-          <h4 style={{ fontSize: '13px', color: 'var(--accent-purple)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px' }}>
+        <div className="event-edit-section">
+          <h4 className="event-edit-section__title event-edit-section__title--purple">
             Timing & Recurrence
           </h4>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '15px' }}>
-            <div style={{ flex: '1 1 200px' }}>
-              <label style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>Start Date & Time</label>
+          <div className="event-edit-grid">
+            <div className="event-edit-grid-item">
+              <label className="event-edit-label">Start Date & Time</label>
               <Datepicker
                 selected={startDate}
                 onChange={date => setStartDate(date)}
                 showTimeSelect
                 dateFormat="Pp"
-                className="Demo__search-input"
-                style={{ width: '100%' }}
+                className="Demo__search-input event-edit-datepicker-full"
               />
             </div>
             
-            <div style={{ flex: '1 1 200px' }}>
-              <label style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>End Date & Time</label>
+            <div className="event-edit-grid-item">
+              <label className="event-edit-label">End Date & Time</label>
               <Datepicker
                 selected={endDate}
                 onChange={date => setEndDate(date)}
                 showTimeSelect
                 dateFormat="Pp"
-                className="Demo__search-input"
-                style={{ width: '100%' }}
+                className="Demo__search-input event-edit-datepicker-full"
               />
             </div>
 
-            <div style={{ flex: '1 1 200px' }}>
-              <label style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>Special Type</label>
+            <div className="event-edit-grid-item">
+              <label className="event-edit-label">Special Type</label>
               <select 
                 value={type} 
                 onChange={e => setType(e.target.value)}
-                style={{
-                  width: '100%',
-                  background: 'var(--bg-primary)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: '6px',
-                  color: 'white',
-                  padding: '10px 14px',
-                  fontSize: '14px',
-                  outline: 'none'
-                }}
+                className="event-edit-select"
               >
                 <option value="happy-hour">Happy Hour</option>
                 <option value="comedy">Comedy Event</option>
@@ -371,21 +305,12 @@ export default function EventEdit({ mgid }) {
               </select>
             </div>
 
-            <div style={{ flex: '1 1 200px' }}>
-              <label style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>Recurrence</label>
+            <div className="event-edit-grid-item">
+              <label className="event-edit-label">Recurrence</label>
               <select 
                 value={recurrence} 
                 onChange={e => setRecurrence(e.target.value)}
-                style={{
-                  width: '100%',
-                  background: 'var(--bg-primary)',
-                  border: '1px solid var(--border-color)',
-                  borderRadius: '6px',
-                  color: 'white',
-                  padding: '10px 14px',
-                  fontSize: '14px',
-                  outline: 'none'
-                }}
+                className="event-edit-select"
               >
                 <option value="once">Once Off</option>
                 <option value="daily">Daily</option>

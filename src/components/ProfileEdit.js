@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Overlay from './Overlay'
 import dedupeFetch from './utilities/dedupeFetch'
+import './ProfileEdit.css'
 
 export default function ProfileEdit({ mgid }) {
   const router = useRouter()
@@ -90,7 +91,7 @@ export default function ProfileEdit({ mgid }) {
   }
 
   const buttons = (
-    <div style={{ display: 'flex', gap: '10px' }}>
+    <div className="profile-edit-buttons">
       <button type="button" className="btn btn-secondary" onClick={() => router.push('/')}>
         Cancel
       </button>
@@ -103,8 +104,8 @@ export default function ProfileEdit({ mgid }) {
   if (loading) {
     return (
       <Overlay title="Loading Profile...">
-        <div style={{ padding: '40px', textAlign: 'center', color: 'var(--text-secondary)' }}>
-          <i className="icon icon-spinner fa-spin" style={{ fontSize: '24px', color: 'var(--accent-purple)', marginBottom: '10px' }} />
+        <div className="profile-edit-loading">
+          <i className="icon icon-spinner fa-spin profile-edit-spinner" />
           <div>Retrieving profile details...</div>
         </div>
       </Overlay>
@@ -114,11 +115,11 @@ export default function ProfileEdit({ mgid }) {
   if (authChecked && !isLoggedIn) {
     return (
       <Overlay title="Access Restricted">
-        <div style={{ padding: '30px', textAlign: 'center' }}>
-          <p style={{ color: 'var(--text-secondary)', marginBottom: '20px' }}>
+        <div className="profile-edit-restricted">
+          <p>
             You must be logged in to view or edit user profiles.
           </p>
-          <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+          <div className="profile-edit-restricted__actions">
             <button className="btn btn-secondary" onClick={() => router.push('/')}>
               Go Back
             </button>
@@ -133,110 +134,64 @@ export default function ProfileEdit({ mgid }) {
 
   return (
     <Overlay title="Edit Profile" buttons={buttons}>
-      <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <form onSubmit={handleSave} className="profile-edit-form">
         
-        <div style={{ textAlign: 'center', marginBottom: '10px' }}>
+        <div className="profile-edit-avatar-section">
           <div 
-            style={{
-              width: '80px',
-              height: '80px',
-              borderRadius: '50%',
-              backgroundColor: 'var(--accent-purple)',
-              backgroundImage: "url('/images/default_person.jpg')",
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              margin: '0 auto 12px',
-              border: '2px solid var(--accent-gold)'
-            }}
+            className="profile-edit-avatar-preview"
             aria-label="User Avatar preview"
           ></div>
           <button type="button" className="btn btn-secondary btn-xs">Change Avatar</button>
         </div>
 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div className="profile-edit-fields">
           <div>
-            <label style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>Username</label>
+            <label className="profile-edit-label">Username</label>
             <input 
               type="text" 
               value={username} 
               onChange={e => setUsername(e.target.value)} 
               required
-              style={{
-                width: '100%',
-                background: 'var(--bg-primary)',
-                border: '1px solid var(--border-color)',
-                borderRadius: '6px',
-                color: 'white',
-                padding: '10px 14px',
-                fontSize: '14px',
-                outline: 'none'
-              }}
+              className="profile-edit-input"
             />
           </div>
 
           <div>
-            <label style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>Email Address</label>
+            <label className="profile-edit-label">Email Address</label>
             <input 
               type="email" 
               value={email} 
               onChange={e => setEmail(e.target.value)} 
               required
-              style={{
-                width: '100%',
-                background: 'var(--bg-primary)',
-                border: '1px solid var(--border-color)',
-                borderRadius: '6px',
-                color: 'white',
-                padding: '10px 14px',
-                fontSize: '14px',
-                outline: 'none'
-              }}
+              className="profile-edit-input"
             />
           </div>
 
-          <div style={{ borderTop: '1px solid var(--border-color)', marginTop: '10px', paddingTop: '15px' }}>
-            <h4 style={{ fontSize: '12px', color: 'var(--accent-purple)', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px' }}>
+          <div className="profile-edit-password-section">
+            <h4 className="profile-edit-password-title">
               Change Password (Optional)
             </h4>
             
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div className="profile-edit-fields">
               <div>
-                <label style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>New Password</label>
+                <label className="profile-edit-label">New Password</label>
                 <input 
                   type="password" 
                   value={password} 
                   onChange={e => setPassword(e.target.value)} 
                   placeholder="Leave blank to keep current"
-                  style={{
-                    width: '100%',
-                    background: 'var(--bg-primary)',
-                    border: '1px solid var(--border-color)',
-                    borderRadius: '6px',
-                    color: 'white',
-                    padding: '10px 14px',
-                    fontSize: '14px',
-                    outline: 'none'
-                  }}
+                  className="profile-edit-input"
                 />
               </div>
 
               <div>
-                <label style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'block', marginBottom: '4px' }}>Confirm Password</label>
+                <label className="profile-edit-label">Confirm Password</label>
                 <input 
                   type="password" 
                   value={confirmPassword} 
                   onChange={e => setConfirmPassword(e.target.value)} 
                   placeholder="Leave blank to keep current"
-                  style={{
-                    width: '100%',
-                    background: 'var(--bg-primary)',
-                    border: '1px solid var(--border-color)',
-                    borderRadius: '6px',
-                    color: 'white',
-                    padding: '10px 14px',
-                    fontSize: '14px',
-                    outline: 'none'
-                  }}
+                  className="profile-edit-input"
                 />
               </div>
             </div>

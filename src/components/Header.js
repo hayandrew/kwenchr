@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import ProfileDropdown from "./ProfileDropdown";
+import "./Header.css";
 
 export default function Header() {
   const [user, setUser] = useState(null);
@@ -81,30 +82,12 @@ export default function Header() {
             <div className="desktop-auth-links">
               <Link
                 href="/sign-in"
-                style={{
-                  fontSize: "13px",
-                  color: "var(--text-secondary)",
-                  fontWeight: "600",
-                  transition: "color 0.2s",
-                }}
                 className="header-signin-link"
               >
                 Sign In
               </Link>
               <Link
                 href="/create-account"
-                style={{
-                  fontSize: "13px",
-                  color: "white",
-                  fontWeight: "600",
-                  background:
-                    "linear-gradient(135deg, var(--accent-purple), #7e22ce)",
-                  padding: "6px 14px",
-                  borderRadius: "20px",
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
-                  transition: "all 0.2s",
-                  boxShadow: "0 4px 12px rgba(147, 51, 234, 0.2)",
-                }}
                 className="header-signup-link"
               >
                 Create Account

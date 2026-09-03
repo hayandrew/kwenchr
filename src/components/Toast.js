@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react'
+import './Toast.css'
 
 export function showToast(message, type = 'success') {
   if (typeof window !== 'undefined') {
@@ -30,39 +31,13 @@ export default function ToastContainer() {
   }, [])
 
   return (
-    <div style={{
-      position: 'fixed',
-      top: '30px',
-      left: '50%',
-      transform: 'translateX(-50%)',
-      zIndex: 9999,
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '10px',
-      pointerEvents: 'none'
-    }}>
+    <div className="toast-wrapper">
       {toasts.map((t) => (
         <div
           key={t.id}
           className="toast-card"
-          style={{
-            background: 'rgba(20, 15, 35, 0.85)',
-            border: '1px solid var(--accent-purple)',
-            backdropFilter: 'blur(16px)',
-            color: 'white',
-            padding: '12px 24px',
-            borderRadius: '50px',
-            fontSize: '13px',
-            fontWeight: '600',
-            boxShadow: '0 8px 32px 0 rgba(147, 51, 234, 0.25)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            animation: 'toastSlideDown 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-            pointerEvents: 'auto'
-          }}
         >
-          <i className="icon icon-info-circle" style={{ color: 'var(--accent-gold)', fontSize: '14px' }}></i>
+          <i className="icon icon-info-circle toast-icon"></i>
           <span>{t.message}</span>
         </div>
       ))}

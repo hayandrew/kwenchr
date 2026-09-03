@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Overlay from "./Overlay";
 import { showToast } from "./Toast";
+import "./SignIn.css";
 
 export default function SignIn() {
   const router = useRouter();
@@ -47,7 +48,7 @@ export default function SignIn() {
   };
 
   const buttons = (
-    <div style={{ display: "flex", gap: "10px" }}>
+    <div className="auth-buttons">
       <button
         type="button"
         className="btn btn-secondary"
@@ -68,35 +69,16 @@ export default function SignIn() {
 
   return (
     <Overlay title="Sign In" buttons={buttons}>
-      <form
-        onSubmit={handleLogin}
-        style={{ display: "flex", flexDirection: "column", gap: "20px" }}
-      >
+      <form onSubmit={handleLogin} className="auth-form">
         {errorMsg && (
-          <div
-            style={{
-              background: "rgba(235, 87, 87, 0.1)",
-              border: "1px solid #eb5757",
-              borderRadius: "6px",
-              color: "#eb5757",
-              padding: "10px 14px",
-              fontSize: "13px",
-            }}
-          >
+          <div className="auth-error-alert">
             {errorMsg}
           </div>
         )}
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+        <div className="auth-fields">
           <div>
-            <label
-              style={{
-                fontSize: "12px",
-                color: "var(--text-secondary)",
-                display: "block",
-                marginBottom: "4px",
-              }}
-            >
+            <label className="auth-label">
               Username or Email
             </label>
             <input
@@ -105,28 +87,12 @@ export default function SignIn() {
               onChange={(e) => setUsernameOrEmail(e.target.value)}
               placeholder="Enter your username or email"
               required
-              style={{
-                width: "100%",
-                background: "var(--bg-primary)",
-                border: "1px solid var(--border-color)",
-                borderRadius: "6px",
-                color: "white",
-                padding: "10px 14px",
-                fontSize: "16px",
-                outline: "none",
-              }}
+              className="auth-input"
             />
           </div>
 
           <div>
-            <label
-              style={{
-                fontSize: "12px",
-                color: "var(--text-secondary)",
-                display: "block",
-                marginBottom: "4px",
-              }}
-            >
+            <label className="auth-label">
               Password
             </label>
             <input
@@ -135,33 +101,14 @@ export default function SignIn() {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
               required
-              style={{
-                width: "100%",
-                background: "var(--bg-primary)",
-                border: "1px solid var(--border-color)",
-                borderRadius: "6px",
-                color: "white",
-                padding: "10px 14px",
-                fontSize: "16px",
-                outline: "none",
-              }}
+              className="auth-input"
             />
           </div>
         </div>
 
-        <div
-          style={{
-            fontSize: "13px",
-            color: "var(--text-secondary)",
-            textAlign: "center",
-            marginTop: "10px",
-          }}
-        >
+        <div className="auth-switch-link">
           Don&apos;t have an account?{" "}
-          <Link
-            href="/create-account"
-            style={{ color: "var(--accent-gold)", fontWeight: "bold" }}
-          >
+          <Link href="/create-account">
             Create Account
           </Link>
         </div>

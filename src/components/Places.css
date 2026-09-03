@@ -1,0 +1,28 @@
+.current-location-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--accent-gold);
+  font-weight: 600;
+  padding: 10px 14px;
+  cursor: pointer;
+}
+
+.current-location-option.Demo__suggestion-item--active {
+  color: white;
+}
+
+.current-location-option .location-icon {
+  font-size: 14px;
+}
+
+.Demo__suggestion-item .suggestion-secondary-text {
+  color: var(--text-muted);
+}
+
+.Demo__error-message {
+  color: hsl(0, 75%, 50%);
+  font-size: 12px;
+  margin-top: 6px;
+}

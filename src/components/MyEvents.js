@@ -3,6 +3,7 @@ import React from 'react'
 import Overlay from './Overlay'
 import EventsList from './EventsList'
 import staticEvents from '@/data/events'
+import './MyEvents.css'
 
 export default function MyEvents() {
   // Slice events array to simulate user-specific events
@@ -10,8 +11,8 @@ export default function MyEvents() {
 
   return (
     <Overlay title="My Events">
-      <div style={{ padding: '5px 0' }}>
-        <h4 style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '15px' }}>
+      <div className="my-events-container">
+        <h4 className="my-events-subtitle">
           Drink specials and happy hours you have bookmarked or created:
         </h4>
         <EventsList events={myEventsList} />

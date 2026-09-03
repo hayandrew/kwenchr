@@ -22,14 +22,13 @@ export default function Legal({ initialTab = 'terms' }) {
   }
 
   const buttons = (
-    <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+    <div className="legal-buttons">
       <button
         type="button"
-        className="btn btn-secondary btn-sm"
+        className="btn btn-secondary btn-sm legal-btn-print"
         onClick={() => {
           if (typeof window !== 'undefined') window.print()
         }}
-        style={{ display: 'inline-flex', alignItems: 'center', gap: '6px' }}
       >
         <i className="icon icon-file-text"></i> Print
       </button>
@@ -237,7 +236,7 @@ export default function Legal({ initialTab = 'terms' }) {
               <p>We utilize select third-party service providers to deliver essential features:</p>
               <ul>
                 <li>
-                  <strong>Google Maps & Places API:</strong> Powers our venue search and map displays. Google processes location queries in accordance with the <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer" style={{ color: 'var(--accent-gold)' }}>Google Privacy Policy</a>.
+                  <strong>Google Maps & Places API:</strong> Powers our venue search and map displays. Google processes location queries in accordance with the <a href="https://policies.google.com/privacy" target="_blank" rel="noreferrer" className="legal-gold-link">Google Privacy Policy</a>.
                 </li>
                 <li>
                   <strong>Database & Hosting Providers:</strong> Secure cloud infrastructure (such as MongoDB Atlas) with industry-standard encryption at rest and in transit.
@@ -261,7 +260,7 @@ export default function Legal({ initialTab = 'terms' }) {
               <ul>
                 <li><strong>Location Control:</strong> You can disable geolocation access at any time through your browser settings or choose manual address search instead.</li>
                 <li><strong>Account Updates:</strong> You may edit your profile information or delete your submitted events directly in the app.</li>
-                <li><strong>Data Deletion Requests:</strong> You may request complete deletion of your account and personal data by emailing <a href="mailto:privacy@kwenchr.com" style={{ color: 'var(--accent-gold)' }}>privacy@kwenchr.com</a>.</li>
+                <li><strong>Data Deletion Requests:</strong> You may request complete deletion of your account and personal data by emailing <a href="mailto:privacy@kwenchr.com" className="legal-gold-link">privacy@kwenchr.com</a>.</li>
               </ul>
             </section>
 
@@ -440,7 +439,7 @@ export default function Legal({ initialTab = 'terms' }) {
               <div className="legal-contact-box">
                 Email: <a href="mailto:privacy@kwenchr.com">privacy@kwenchr.com</a> (Response timeframe: within 30 calendar days).
               </div>
-              <p style={{ marginTop: '10px' }}>
+              <p className="legal-paragraph-spaced">
                 You also hold the right to lodge a formal complaint with your local EU Data Protection Supervisory Authority (e.g., the Information Commissioner&apos;s Office in the UK, CNIL in France, or BfDI in Germany).
               </p>
             </section>

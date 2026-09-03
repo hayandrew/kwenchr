@@ -1,6 +1,7 @@
 import React from "react";
 import Datepicker from "react-datepicker";
 import moment from "moment";
+import "./DatePick.css";
 
 // Ref-forwarding Custom Input component for react-datepicker compatibility
 const DateCustomInput = React.forwardRef(
@@ -9,7 +10,6 @@ const DateCustomInput = React.forwardRef(
       onClick={onClick}
       ref={ref}
       className="datepicker-input-display"
-      style={{ cursor: "pointer", textAlign: "center", outline: "none" }}
     >
       <div
         className="datepicker-weekday datepicker-output"
@@ -35,10 +35,7 @@ const DateCustomInput = React.forwardRef(
       >
         {year}
       </div>
-      <div
-        className="datepicker-button datepicker-button-down"
-        style={{ pointerEvents: "none" }}
-      >
+      <div className="datepicker-button datepicker-button-down">
         <i className="datepicker-down icon icon-calendar-alt"></i>
       </div>
     </div>

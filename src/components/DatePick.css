@@ -1,0 +1,9 @@
+.datepicker-input-display {
+  cursor: pointer;
+  text-align: center;
+  outline: none;
+}
+
+.datepicker-button-down {
+  pointer-events: none;
+}

@@ -1,6 +1,7 @@
 'use client'
 import React from 'react'
 import { useRouter } from 'next/navigation'
+import './Overlay.css'
 
 export default function Overlay({ title, children, buttons, maxWidth, className }) {
   const router = useRouter()

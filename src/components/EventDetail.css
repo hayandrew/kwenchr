@@ -1,0 +1,171 @@
+.event-loading {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.event-loading .loading-spinner {
+  font-size: 24px;
+  color: var(--accent-purple);
+  margin-bottom: 10px;
+}
+
+.event-not-found {
+  padding: 20px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.event-detail-content .event-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 15px;
+}
+
+.event-detail-content .event-header__title h2 {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--accent-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.event-detail-content .event-header__title h4 {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 4px;
+}
+
+.event-detail-content .event-header__title h4:last-of-type {
+  margin-top: 2px;
+}
+
+.event-detail-content .event-header__promoter {
+  text-align: right;
+}
+
+.event-detail-content .event-user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.event-detail-content .promoter-image {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--accent-purple);
+  background-image: url('/images/default_person.jpg');
+  background-size: cover;
+  display: block;
+}
+
+.event-detail-content .promoter-name {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.event-detail-content .form-images {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.event-detail-content .form-images__image {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+}
+
+.event-detail-content .form-button-row {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+}
+
+.event-detail-content .form-button-row .btn-form {
+  background: rgba(0, 0, 0, 0.6);
+  border: 0;
+  color: white;
+}
+
+.event-detail-content .event-rating-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.event-detail-content .fav-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+}
+
+.event-detail-content .fav-button i {
+  color: var(--accent-gold);
+}
+
+.event-detail-content .event-type-badge {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.event-detail-content .event-type-badge strong {
+  color: var(--accent-purple);
+}
+
+.event-detail-content .form-occurences {
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.event-detail-content .form-occurences h3 {
+  font-size: 14px;
+  font-weight: bold;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.event-detail-content .form-occurences p {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.event-detail-content .venue-info-section {
+  border-top: 1px solid var(--border-color);
+  padding-top: 15px;
+}
+
+.event-detail-content .venue-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-primary);
+}
+
+.event-detail-content .venue-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.event-detail-content .venue-icon {
+  color: var(--accent-gold);
+}
+
+.event-detail-content .venue-address {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-top: 6px;
+  padding-left: 22px;
+}

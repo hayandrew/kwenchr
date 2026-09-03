@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect } from 'react'
 import Places from './Places'
+import './Location.css'
 
 export default function Location({ onLocationChange }) {
   useEffect(() => {
@@ -60,7 +61,7 @@ export default function Location({ onLocationChange }) {
   }, [onLocationChange])
 
   return (
-    <div className="filter-container" style={{ overflow: 'visible' }}>
+    <div className="filter-container location-filter-container">
       <label>
         <i className="icon icon-map-marker-alt" />
       </label>

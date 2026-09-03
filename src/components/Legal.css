@@ -1,0 +1,19 @@
+.legal-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.legal-btn-print {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legal-gold-link {
+  color: var(--accent-gold);
+}
+
+.legal-paragraph-spaced {
+  margin-top: 10px;
+}
