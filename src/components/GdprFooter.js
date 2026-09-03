@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect, useSyncExternalStore } from 'react'
 import Link from 'next/link'
+import './GdprFooter.css'
 
 const CONSENT_KEY = 'kwenchr_gdpr_consent'
 

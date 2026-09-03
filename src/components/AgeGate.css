@@ -1,0 +1,227 @@
+/* AGE GATE MODAL */
+.age-gate-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  background: rgba(4, 4, 10, 0.88);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.age-gate-card {
+  background: linear-gradient(
+    180deg,
+    hsla(240, 22%, 13%, 0.96),
+    hsla(240, 25%, 8%, 0.98)
+  );
+  border: 1px solid var(--border-glow);
+  box-shadow:
+    0 20px 50px rgba(0, 0, 0, 0.75),
+    0 0 35px hsla(265, 80%, 62%, 0.22);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 460px;
+  padding: 36px 30px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: scaleUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.age-gate-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.age-gate-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  background: hsla(42, 90%, 55%, 0.15);
+  color: var(--accent-gold);
+  border: 1px solid hsla(42, 90%, 55%, 0.35);
+  margin-bottom: 16px;
+}
+
+.age-gate-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-gold);
+  box-shadow: 0 0 6px var(--accent-gold);
+}
+
+.age-gate-logo {
+  margin-bottom: 12px;
+}
+
+.age-gate-logo .icon-kwenchr {
+  font-size: 28px;
+  color: var(--text-primary);
+}
+
+.age-gate-title {
+  font-size: 1.65rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 10px 0;
+  background: linear-gradient(135deg, #ffffff 30%, #c4b5fd 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.02em;
+}
+
+.age-gate-subtitle {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+.age-gate-form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.age-gate-field {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.age-gate-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-primary);
+  letter-spacing: 0.02em;
+}
+
+.age-gate-input-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 240px;
+  display: flex;
+  align-items: center;
+}
+
+.age-gate-input {
+  width: 100%;
+  height: 52px;
+  font-size: 1.4rem;
+  font-weight: 700;
+  text-align: center;
+  border-radius: 10px;
+  background: hsla(240, 20%, 8%, 0.95);
+  border: 1.5px solid var(--border-color);
+  color: #fff;
+  outline: none;
+  transition: all 0.2s ease;
+  padding: 0 65px 0 20px;
+  font-family: inherit;
+}
+
+.age-gate-input:focus {
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 18px hsla(265, 80%, 62%, 0.4);
+}
+
+.age-gate-input.has-error {
+  border-color: #ef4444;
+  box-shadow: 0 0 14px rgba(239, 68, 68, 0.35);
+}
+
+.age-gate-unit {
+  position: absolute;
+  right: 14px;
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 600;
+  pointer-events: none;
+}
+
+.age-gate-error-message {
+  font-size: 12.5px;
+  color: #f87171;
+  font-weight: 500;
+  margin-top: 4px;
+}
+
+.age-gate-remember {
+  display: flex;
+  justify-content: center;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+
+.age-gate-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.age-gate-checkbox {
+  accent-color: var(--accent-purple);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.age-gate-submit-btn {
+  width: 100%;
+  height: 48px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 10px;
+  letter-spacing: 0.02em;
+  background: linear-gradient(135deg, var(--accent-purple), #7c3aed);
+  box-shadow: 0 4px 16px hsla(265, 80%, 62%, 0.4);
+  border: none;
+  cursor: pointer;
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.age-gate-submit-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 22px hsla(265, 80%, 62%, 0.6);
+}
+
+.age-gate-footer {
+  margin-top: 20px;
+  font-size: 11.5px;
+  color: var(--text-muted);
+  line-height: 1.55;
+  width: 100%;
+}
+
+.age-gate-link {
+  color: var(--text-secondary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color 0.2s;
+}
+
+.age-gate-link:hover {
+  color: var(--accent-gold);
+}

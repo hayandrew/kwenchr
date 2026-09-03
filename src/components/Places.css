@@ -1,3 +1,89 @@
+/* PLACES API AUTOCOMPLETE */
+.places-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.search-bar-container {
+  position: relative;
+  width: 100%;
+}
+
+.search-input-container {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+}
+
+.search-input {
+  width: 100%;
+  background: var(--bg-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 0 6px 6px 0 !important;
+  color: var(--text-primary) !important;
+  padding: 10px 14px !important;
+  outline: none;
+  font-size: 14px;
+}
+
+.search-input:focus {
+  border-color: var(--accent-purple) !important;
+  box-shadow: 0 0 0 2px var(--accent-purple-glow) !important;
+}
+
+.clear-button {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+}
+
+.clear-button:hover {
+  color: var(--text-primary);
+}
+
+.autocomplete-container {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  z-index: 1500;
+  box-shadow: var(--shadow-lg);
+  margin-top: 5px;
+  overflow: hidden;
+}
+
+.suggestion-item {
+  padding: 10px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.suggestion-item--active,
+.suggestion-item:hover {
+  background: var(--accent-purple);
+  color: white;
+}
+
+.dropdown-footer {
+  padding: 8px 14px;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.dropdown-footer-image {
+  height: 14px;
+  opacity: 0.6;
+}
+
 .current-location-option {
   display: flex;
   align-items: center;
@@ -9,7 +95,7 @@
   cursor: pointer;
 }
 
-.current-location-option.Demo__suggestion-item--active {
+.current-location-option.suggestion-item--active {
   color: white;
 }
 
@@ -17,11 +103,11 @@
   font-size: 14px;
 }
 
-.Demo__suggestion-item .suggestion-secondary-text {
+.suggestion-item .suggestion-secondary-text {
   color: var(--text-muted);
 }
 
-.Demo__error-message {
+.error-message {
   color: hsl(0, 75%, 50%);
   font-size: 12px;
   margin-top: 6px;

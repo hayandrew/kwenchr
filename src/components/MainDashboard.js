@@ -10,6 +10,7 @@ import Ad from "./Ad";
 import { mapDbEventToClient } from "./utilities/mapEvent";
 import { getDistanceKm } from "./utilities/calculateDistance";
 import dedupeFetch from "./utilities/dedupeFetch";
+import "./MainDashboard.css";
 
 let cachedAllEvents = null;
 let cachedScrollTop = 0;

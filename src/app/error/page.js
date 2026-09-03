@@ -3,6 +3,7 @@ import React from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { resetAgeVerification } from '@/components/AgeGate'
+import './Error.css'
 
 export default function ErrorPage() {
   const router = useRouter()

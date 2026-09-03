@@ -252,8 +252,8 @@ export default function Places({ onLocationChange }) {
 
   return (
     <div className="places-wrapper" ref={dropdownRef}>
-      <div className="Demo__search-bar-container">
-        <div className="input-wrapper Demo__search-input-container">
+      <div className="search-bar-container">
+        <div className="input-wrapper search-input-container">
           <input
             type="text"
             value={address}
@@ -262,7 +262,7 @@ export default function Places({ onLocationChange }) {
             placeholder={isFocused ? "" : placeholder}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
-            className="Demo__search-input"
+            className="search-input"
           />
           {address.length > 0 && (
             <button
@@ -278,10 +278,10 @@ export default function Places({ onLocationChange }) {
         </div>
 
         {isFocused && (suggestions.length > 0 || address.length === 0) && (
-          <div className="Demo__autocomplete-container">
+          <div className="autocomplete-container">
             {/* Permanent "Use Current Location" option */}
             <div
-              className={`Demo__suggestion-item current-location-option ${activeSuggestionIndex === 0 ? "Demo__suggestion-item--active" : ""}`}
+              className={`suggestion-item current-location-option ${activeSuggestionIndex === 0 ? "suggestion-item--active" : ""}`}
               onMouseDown={(e) => {
                 e.preventDefault();
                 handleUseCurrentLocation();
@@ -304,7 +304,7 @@ export default function Places({ onLocationChange }) {
               return (
                 <div
                   key={suggestion.placePrediction.placeId || index}
-                  className={`Demo__suggestion-item ${isActive ? "Demo__suggestion-item--active" : ""}`}
+                  className={`suggestion-item ${isActive ? "suggestion-item--active" : ""}`}
                   onMouseDown={(e) => {
                     e.preventDefault();
                     handleSelect(suggestion);
@@ -318,13 +318,13 @@ export default function Places({ onLocationChange }) {
                 </div>
               );
             })}
-            <div className="Demo__dropdown-footer">
+            <div className="dropdown-footer">
               <div>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src="/images/powered_by_google_default.png"
                   alt="Powered by Google"
-                  className="Demo__dropdown-footer-image"
+                  className="dropdown-footer-image"
                 />
               </div>
             </div>
@@ -333,7 +333,7 @@ export default function Places({ onLocationChange }) {
       </div>
 
       {errorMessage.length > 0 && (
-        <div className="Demo__error-message">
+        <div className="error-message">
           {errorMessage}
         </div>
       )}

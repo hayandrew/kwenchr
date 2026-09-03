@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
+import './AgeGate.css'
 
 const AGE_STORAGE_KEY = 'kwenchr_age_verified'
 

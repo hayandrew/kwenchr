@@ -1,0 +1,38 @@
+/* SELECT COMPONENT */
+.select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.select-wrapper select {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  color: var(--text-primary);
+  padding: 10px 30px 10px 14px;
+  width: 100%;
+  outline: none;
+  font-size: 14px;
+  border-radius: 0 6px 6px 0;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.select-wrapper select:focus {
+  border-color: var(--accent-purple);
+  box-shadow: 0 0 0 2px var(--accent-purple-glow);
+}
+
+.select-wrapper::after {
+  content: "\E003"; /* icon-chevron-down */
+  font-family: "icons";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+  font-size: 10px;
+}

@@ -277,7 +277,7 @@ export default function EventEdit({ mgid }) {
                 onChange={date => setStartDate(date)}
                 showTimeSelect
                 dateFormat="Pp"
-                className="Demo__search-input event-edit-datepicker-full"
+                className="search-input event-edit-datepicker-full"
               />
             </div>
             
@@ -288,7 +288,7 @@ export default function EventEdit({ mgid }) {
                 onChange={date => setEndDate(date)}
                 showTimeSelect
                 dateFormat="Pp"
-                className="Demo__search-input event-edit-datepicker-full"
+                className="search-input event-edit-datepicker-full"
               />
             </div>
 
