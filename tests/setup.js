@@ -28,8 +28,8 @@ vi.mock('next/link', () => ({
   ),
 }))
 
-// Mock Session Storage
-const sessionStorageMock = (() => {
+// Mock Session Storage & Local Storage
+const createStorageMock = () => {
   let store = {}
   return {
     getItem: vi.fn((key) => store[key] || null),
@@ -43,10 +43,18 @@ const sessionStorageMock = (() => {
       store = {}
     }),
   }
-})()
+}
+
+const sessionStorageMock = createStorageMock()
+const localStorageMock = createStorageMock()
 
 Object.defineProperty(window, 'sessionStorage', {
   value: sessionStorageMock,
+  writable: true,
+})
+
+Object.defineProperty(window, 'localStorage', {
+  value: localStorageMock,
   writable: true,
 })
 

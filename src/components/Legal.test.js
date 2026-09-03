@@ -36,6 +36,14 @@ describe('Legal Component', () => {
     expect(screen.getByText(/Transparent Storage Practices:/i)).toBeInTheDocument()
   })
 
+  it('renders GDPR Compliance when initialTab is gdpr', () => {
+    render(<Legal initialTab="gdpr" />)
+
+    expect(screen.getByRole('heading', { name: /gdpr compliance & data rights/i })).toBeInTheDocument()
+    expect(screen.getByText(/GDPR \/ UK GDPR Compliance/i)).toBeInTheDocument()
+    expect(screen.getByText(/Your Data Protection Rights:/i)).toBeInTheDocument()
+  })
+
   it('switches tabs when clicking on tab buttons', () => {
     render(<Legal initialTab="terms" />)
 
@@ -55,6 +63,13 @@ describe('Legal Component', () => {
 
     expect(screen.getByRole('tab', { name: /cookie policy/i })).toHaveAttribute('aria-selected', 'true')
     expect(screen.getByText(/Transparent Storage Practices:/i)).toBeInTheDocument()
+
+    // Click GDPR tab
+    const gdprTab = screen.getByRole('tab', { name: /gdpr & rights/i })
+    fireEvent.click(gdprTab)
+
+    expect(screen.getByRole('tab', { name: /gdpr & rights/i })).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByText(/Your Data Protection Rights:/i)).toBeInTheDocument()
   })
 
   it('navigates on Done button click', () => {

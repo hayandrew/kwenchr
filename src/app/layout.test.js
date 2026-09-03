@@ -25,6 +25,10 @@ vi.mock('@/components/Footer', () => ({
   default: () => <div data-testid="mock-footer" />
 }))
 
+vi.mock('@/components/GdprFooter', () => ({
+  default: () => <div data-testid="mock-gdpr-footer" />
+}))
+
 vi.mock('@/components/Toast', () => ({
   default: () => <div data-testid="mock-toast-container" />
 }))
@@ -45,6 +49,7 @@ describe('RootLayout Component', () => {
     // Check children, header, footer, toast container render
     expect(screen.getByTestId('mock-header')).toBeInTheDocument()
     expect(screen.getByTestId('mock-footer')).toBeInTheDocument()
+    expect(screen.getByTestId('mock-gdpr-footer')).toBeInTheDocument()
     expect(screen.getByTestId('mock-toast-container')).toBeInTheDocument()
     expect(screen.getByTestId('mock-children')).toBeInTheDocument()
     expect(screen.getByText('Content Child')).toBeInTheDocument()

@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import Link from 'next/link'
 
@@ -22,6 +23,23 @@ export default function Footer() {
           <Link href="/cookies" className="footer-link">
             Cookie Policy
           </Link>
+          <span className="footer-divider" aria-hidden="true">&bull;</span>
+          <Link href="/gdpr" className="footer-link">
+            GDPR
+          </Link>
+          <span className="footer-divider" aria-hidden="true">&bull;</span>
+          <button
+            type="button"
+            className="footer-link footer-button-link"
+            onClick={() => {
+              if (typeof window !== 'undefined') {
+                window.dispatchEvent(new CustomEvent('kwenchr:open-cookie-preferences'))
+              }
+            }}
+            aria-label="Manage Cookie Preferences"
+          >
+            Cookie Preferences
+          </button>
         </nav>
       </div>
     </footer>

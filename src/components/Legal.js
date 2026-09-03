@@ -18,6 +18,7 @@ export default function Legal({ initialTab = 'terms' }) {
     terms: 'Terms of Service',
     privacy: 'Privacy Policy',
     cookies: 'Cookie Policy',
+    gdpr: 'GDPR Compliance & Data Rights',
   }
 
   const buttons = (
@@ -82,6 +83,15 @@ export default function Legal({ initialTab = 'terms' }) {
           onClick={() => handleTabChange('cookies')}
         >
           <i className="icon icon-sliders"></i> Cookie Policy
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === 'gdpr'}
+          className={`legal-tab-btn ${activeTab === 'gdpr' ? 'active' : ''}`}
+          onClick={() => handleTabChange('gdpr')}
+        >
+          <i className="icon icon-check-circle"></i> GDPR &amp; Rights
         </button>
       </div>
 
@@ -336,6 +346,103 @@ export default function Legal({ initialTab = 'terms' }) {
               <div className="legal-contact-box">
                 For inquiries regarding our Cookie Policy, reach out to us at <a href="mailto:privacy@kwenchr.com">privacy@kwenchr.com</a>.
               </div>
+            </section>
+          </article>
+        )}
+
+        {/* GDPR COMPLIANCE & DATA RIGHTS */}
+        {activeTab === 'gdpr' && (
+          <article aria-label="GDPR Compliance & Data Rights">
+            <div className="legal-badge">GDPR / UK GDPR Compliance</div>
+            <div className="legal-meta">
+              <span><strong>Effective Date:</strong> September 1, 2026</span>
+              <span><strong>Applicability:</strong> European Economic Area (EEA) &amp; United Kingdom</span>
+            </div>
+
+            <div className="legal-callout success">
+              <strong>Your Data Protection Rights:</strong> Under the General Data Protection Regulation (GDPR) and UK Data Protection Act, you possess clear, enforceable rights over your personal data. kwenchr is committed to complete transparency, privacy by design, and empowering you with effortless control over your information.
+            </div>
+
+            <section className="legal-section">
+              <h4>1. Data Controller Identification</h4>
+              <p>
+                The data controller responsible for the processing of your personal data on kwenchr is:
+              </p>
+              <div className="legal-contact-box">
+                <strong>kwenchr, inc. Data Protection Office</strong><br />
+                Attn: Data Protection Officer (DPO)<br />
+                Email: <a href="mailto:dpo@kwenchr.com">dpo@kwenchr.com</a> / <a href="mailto:privacy@kwenchr.com">privacy@kwenchr.com</a>
+              </div>
+            </section>
+
+            <section className="legal-section">
+              <h4>2. Lawful Bases for Processing</h4>
+              <p>
+                In accordance with Article 6 of the GDPR, kwenchr processes personal data only when a recognized lawful basis applies:
+              </p>
+              <ul>
+                <li>
+                  <strong>Consent (Art. 6(1)(a)):</strong> We request your explicit consent before accessing your device&apos;s real-time GPS coordinates to find nearby nightlife venues, and before storing non-essential cookies. You may withdraw consent at any time via the Cookie Preferences footer link.
+                </li>
+                <li>
+                  <strong>Contractual Necessity (Art. 6(1)(b)):</strong> Processing necessary to provide you with an account, authenticate your login session, and allow you to submit, edit, or manage drink special listings.
+                </li>
+                <li>
+                  <strong>Legitimate Interests (Art. 6(1)(f)):</strong> Processing necessary to maintain platform security, detect fraudulent activities, prevent denial-of-service attacks, and troubleshoot technical errors.
+                </li>
+              </ul>
+            </section>
+
+            <section className="legal-section">
+              <h4>3. Your Individual Rights Under GDPR</h4>
+              <p>
+                As a data subject in the EEA or UK, you are entitled to exercise the following statutory rights without fee:
+              </p>
+              <ul>
+                <li>
+                  <strong>Right of Access (Article 15):</strong> You have the right to obtain confirmation as to whether personal data concerning you is being processed, and to receive a copy of your data.
+                </li>
+                <li>
+                  <strong>Right to Rectification (Article 16):</strong> You may update or correct inaccurate or incomplete profile data at any time through your Account Profile page or by contacting us.
+                </li>
+                <li>
+                  <strong>Right to Erasure / &ldquo;Right to be Forgotten&rdquo; (Article 17):</strong> You have the right to request the deletion of your account and associated event listings. You can trigger deletion directly from your profile settings or by emailing our DPO.
+                </li>
+                <li>
+                  <strong>Right to Restriction of Processing (Article 18):</strong> You may request restriction of data processing if you contest accuracy or the lawfulness of processing.
+                </li>
+                <li>
+                  <strong>Right to Data Portability (Article 20):</strong> You have the right to receive your personal data in a structured, commonly used, and machine-readable format (JSON).
+                </li>
+                <li>
+                  <strong>Right to Object (Article 21):</strong> You may object at any time to processing based on legitimate interests.
+                </li>
+              </ul>
+            </section>
+
+            <section className="legal-section">
+              <h4>4. Data Minimization &amp; Retention</h4>
+              <p>
+                kwenchr adheres strictly to data minimization principles:
+              </p>
+              <ul>
+                <li><strong>Geolocation:</strong> Raw GPS coordinates are never stored in our permanent database for non-authenticated searches; they reside solely in temporary client-side session storage (5-minute cache).</li>
+                <li><strong>Passwords:</strong> Passwords are cryptographically salted and hashed using bcrypt; plain-text passwords are never visible or stored.</li>
+                <li><strong>Account Deletion:</strong> When an account is deleted, personal profile data is purged from our production database within 30 days.</li>
+              </ul>
+            </section>
+
+            <section className="legal-section">
+              <h4>5. How to Exercise Your Rights</h4>
+              <p>
+                To exercise any of your GDPR rights, or if you have questions about our data governance practices, please contact us at:
+              </p>
+              <div className="legal-contact-box">
+                Email: <a href="mailto:privacy@kwenchr.com">privacy@kwenchr.com</a> (Response timeframe: within 30 calendar days).
+              </div>
+              <p style={{ marginTop: '10px' }}>
+                You also hold the right to lodge a formal complaint with your local EU Data Protection Supervisory Authority (e.g., the Information Commissioner&apos;s Office in the UK, CNIL in France, or BfDI in Germany).
+              </p>
             </section>
           </article>
         )}
