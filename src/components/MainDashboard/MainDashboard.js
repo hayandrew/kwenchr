@@ -29,6 +29,8 @@ export function clearDashboardCache() {
 export default function MainDashboard({ children }) {
   const centerColRef = React.useRef(null);
   const leftWrapperRef = React.useRef(null);
+  const lastScrollYRef = React.useRef(0);
+  const [hideFilters, setHideFilters] = useState(false);
 
   const [currentDate, setCurrentDate] = useState(
     () => cachedCurrentDate || moment(),
@@ -328,10 +330,21 @@ export default function MainDashboard({ children }) {
   useEffect(() => {
     const handleScroll = (e) => {
       if (!children && e.target && typeof e.target.scrollTop === "number") {
-        if (e.target.scrollTop > 0) {
-          cachedScrollTop = e.target.scrollTop;
-        }
         const { scrollTop, scrollHeight, clientHeight } = e.target;
+        if (scrollTop > 0) {
+          cachedScrollTop = scrollTop;
+        }
+
+        const diff = scrollTop - lastScrollYRef.current;
+        if (scrollTop <= 30) {
+          setHideFilters(false);
+        } else if (diff > 8) {
+          setHideFilters(true);
+        } else if (diff < -8) {
+          setHideFilters(false);
+        }
+        lastScrollYRef.current = scrollTop;
+
         if (
           scrollHeight > clientHeight &&
           scrollHeight - scrollTop - clientHeight < 150
@@ -347,6 +360,17 @@ export default function MainDashboard({ children }) {
         if (scrollTop > 0) {
           cachedScrollTop = scrollTop;
         }
+
+        const diff = scrollTop - lastScrollYRef.current;
+        if (scrollTop <= 30) {
+          setHideFilters(false);
+        } else if (diff > 8) {
+          setHideFilters(true);
+        } else if (diff < -8) {
+          setHideFilters(false);
+        }
+        lastScrollYRef.current = scrollTop;
+
         const scrollHeight = document.documentElement.scrollHeight;
         const clientHeight = window.innerHeight;
         if (
@@ -452,7 +476,9 @@ export default function MainDashboard({ children }) {
 
             {/* Center Content Column */}
             <div className="center-column" ref={centerColRef}>
-              <div className="columns filters">
+              <div
+                className={`columns filters ${hideFilters ? "filters-hidden" : ""}`.trim()}
+              >
                 <Location onLocationChange={handleLocationChange} />
                 <EventType value={eventType} onChange={handleTypeChange} />
                 <Distance value={maxDistance} onChange={handleDistanceChange} />
