@@ -1095,3 +1095,35 @@ footer {
     transform: translateY(0);
   }
 }
+
+/* INFINITE SCROLL SPINNER */
+.events-loading-spinner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px 0 32px;
+  width: 100%;
+  color: var(--accent-purple);
+  font-size: 14px;
+  font-weight: 600;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.events-loading-spinner i {
+  font-size: 20px;
+}
+
+.events-loading-spinner span {
+  color: var(--text-secondary);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+

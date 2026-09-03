@@ -54,6 +54,24 @@ describe('Events API Routes (/api/events)', () => {
       const body = await response.json()
       expect(body.error).toBe('Read timeout')
     })
+
+    it('supports pagination with page and limit parameters', async () => {
+      const mockQuery = {
+        skip: vi.fn().mockReturnThis(),
+        limit: vi.fn().mockResolvedValueOnce([{ name: 'Page 2 Event' }])
+      }
+      mockFind.mockReturnValueOnce(mockQuery)
+
+      const request = new Request('http://localhost/api/events?page=2&limit=10')
+      const response = await GET(request)
+      expect(response.status).toBe(200)
+
+      const body = await response.json()
+      expect(body).toEqual([{ name: 'Page 2 Event' }])
+      expect(mockFind).toHaveBeenCalledWith({})
+      expect(mockQuery.skip).toHaveBeenCalledWith(10)
+      expect(mockQuery.limit).toHaveBeenCalledWith(10)
+    })
   })
 
   describe('POST', () => {

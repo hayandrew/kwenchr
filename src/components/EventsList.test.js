@@ -72,4 +72,40 @@ describe('EventsList Component', () => {
     expect(links[0]).toHaveAttribute('href', '/event/event-1')
     expect(links[1]).toHaveAttribute('href', '/event/event-2')
   })
+
+  it('paginates to 10 items when more than 10 events are provided', () => {
+    const manyEvents = Array.from({ length: 25 }, (_, i) => ({
+      mgid: `event-${i + 1}`,
+      title: `Special Event ${i + 1}`,
+      short_desc: 'Drink special description',
+      rating: '80',
+      occurrence: { start_time: '2026-08-28T17:00:00', end_time: '2026-08-28T20:00:00' },
+      venue: { location: '40.7796,-74.0238', name: 'Pub' }
+    }))
+
+    render(<EventsList events={manyEvents} />)
+    const links = screen.getAllByRole('link')
+    expect(links).toHaveLength(10)
+    expect(screen.getByText('Special Event 1')).toBeInTheDocument()
+    expect(screen.getByText('Special Event 10')).toBeInTheDocument()
+    expect(screen.queryByText('Special Event 11')).not.toBeInTheDocument()
+  })
+
+  it('renders loading spinner when isLoadingMore is true', () => {
+    const events = [
+      {
+        mgid: 'event-1',
+        title: 'Happy Hour Special',
+        short_desc: 'Half price drinks',
+        occurrence: { start_time: '2026-08-28T17:00:00', end_time: '2026-08-28T20:00:00' }
+      }
+    ]
+
+    const { rerender } = render(<EventsList events={events} isLoadingMore={false} />)
+    expect(screen.queryByText('Loading more specials...')).not.toBeInTheDocument()
+
+    rerender(<EventsList events={events} isLoadingMore={true} />)
+    expect(screen.getByText('Loading more specials...')).toBeInTheDocument()
+  })
 })
+

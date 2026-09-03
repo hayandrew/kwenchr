@@ -14,11 +14,13 @@ import dedupeFetch from './utilities/dedupeFetch'
 let cachedAllEvents = null
 let cachedScrollTop = 0
 let cachedCurrentDate = null
+let cachedVisibleCount = 10
 
 export function clearDashboardCache() {
   cachedAllEvents = null
   cachedScrollTop = 0
   cachedCurrentDate = null
+  cachedVisibleCount = 10
 }
 
 export default function MainDashboard({ children }) {
@@ -30,6 +32,8 @@ export default function MainDashboard({ children }) {
   const [maxDistance, setMaxDistance] = useState('all')
   const [allEvents, setAllEvents] = useState(() => cachedAllEvents || [])
   const [userCoords, setUserCoords] = useState({ lat: 40.7796, lng: -74.0238 })
+  const [visibleCount, setVisibleCount] = useState(() => cachedVisibleCount || 10)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
 
   // Memorize, filter, and sort events by closest distance synchronously
   const sortedEvents = React.useMemo(() => {
@@ -122,12 +126,41 @@ export default function MainDashboard({ children }) {
     }
   }, [])
 
+  const isRestoringRef = React.useRef(false)
+  const loadMoreTimeoutRef = React.useRef(null)
+  useEffect(() => {
+    return () => {
+      if (loadMoreTimeoutRef.current) {
+        clearTimeout(loadMoreTimeoutRef.current)
+      }
+    }
+  }, [])
+
+  const loadMore = React.useCallback(() => {
+    if (isLoadingMore) return
+    if (visibleCount >= sortedEvents.length) return
+    setIsLoadingMore(true)
+    loadMoreTimeoutRef.current = setTimeout(() => {
+      setVisibleCount(prev => {
+        const next = prev + 10
+        cachedVisibleCount = next
+        return next
+      })
+      setIsLoadingMore(false)
+    }, 400)
+  }, [isLoadingMore, visibleCount, sortedEvents.length])
+
   // Track scroll position on the actual scrollable containers (.center-column on desktop, .main-content-left on mobile)
   useEffect(() => {
     const handleScroll = (e) => {
+      if (isRestoringRef.current) return
       if (!children && e.target && typeof e.target.scrollTop === 'number') {
         if (e.target.scrollTop > 0) {
           cachedScrollTop = e.target.scrollTop
+        }
+        const { scrollTop, scrollHeight, clientHeight } = e.target
+        if (scrollHeight > clientHeight && scrollHeight - scrollTop - clientHeight < 150) {
+          loadMore()
         }
       }
     }
@@ -142,11 +175,12 @@ export default function MainDashboard({ children }) {
       if (centerEl) centerEl.removeEventListener('scroll', handleScroll)
       if (leftEl) leftEl.removeEventListener('scroll', handleScroll)
     }
-  }, [children])
+  }, [children, loadMore])
 
   // Restore scroll position on the container when mounted or when sortedEvents change
   useEffect(() => {
     if (cachedScrollTop > 0) {
+      isRestoringRef.current = true
       const restore = () => {
         if (centerColRef.current && centerColRef.current.scrollTop !== cachedScrollTop) {
           centerColRef.current.scrollTop = cachedScrollTop
@@ -164,13 +198,23 @@ export default function MainDashboard({ children }) {
   const updateDate = (date) => {
     cachedCurrentDate = date
     setCurrentDate(date)
+    cachedVisibleCount = 10
+    setVisibleCount(10)
     if (typeof window !== 'undefined') {
       sessionStorage.setItem('kwenchr_current_date', date.format('YYYY-MM-DD'))
     }
   }
 
   const handleTypeChange = (selectedTypes) => {
+    cachedVisibleCount = 10
+    setVisibleCount(10)
     setEventType(selectedTypes)
+  }
+
+  const handleDistanceChange = (distance) => {
+    cachedVisibleCount = 10
+    setVisibleCount(10)
+    setMaxDistance(distance)
   }
 
   return (
@@ -209,10 +253,15 @@ export default function MainDashboard({ children }) {
               <div className="columns filters">
                 <Location onLocationChange={setUserCoords} />
                 <EventType value={eventType} onChange={handleTypeChange} />
-                <Distance value={maxDistance} onChange={setMaxDistance} />
+                <Distance value={maxDistance} onChange={handleDistanceChange} />
               </div>
 
-              <EventsList events={sortedEvents} />
+              <EventsList
+                events={sortedEvents.slice(0, visibleCount)}
+                hasMore={visibleCount < sortedEvents.length}
+                isLoadingMore={isLoadingMore}
+                onLoadMore={loadMore}
+              />
             </div>
 
           </div>

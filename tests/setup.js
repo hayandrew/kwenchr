@@ -84,3 +84,13 @@ vi.mock('@/components/utilities/dedupeFetch', () => ({
   __esModule: true,
   default: vi.fn().mockImplementation((url, options) => global.fetch(url, options))
 }))
+
+// Mock IntersectionObserver
+global.IntersectionObserver = class IntersectionObserver {
+  constructor(callback) {
+    this.callback = callback
+  }
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+}

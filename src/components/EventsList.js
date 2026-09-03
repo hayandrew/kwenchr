@@ -1,10 +1,57 @@
 'use client'
-import React from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
 import calculateDistance from './utilities/calculateDistance'
 import formatTime from './utilities/formatTime'
 
-export default function EventsList({ events }) {
+export default function EventsList({
+  events = [],
+  hasMore: propHasMore,
+  isLoadingMore: propIsLoadingMore,
+  onLoadMore
+}) {
+  const [internalLimit, setInternalLimit] = useState(10)
+  const [internalLoading, setInternalLoading] = useState(false)
+  const sentinelRef = useRef(null)
+
+  const isControlled = typeof onLoadMore === 'function' || propHasMore !== undefined || propIsLoadingMore !== undefined
+  const displayLimit = (typeof onLoadMore === 'function' || propHasMore !== undefined) ? events.length : internalLimit
+  const hasMore = propHasMore !== undefined ? propHasMore : (events && events.length > internalLimit)
+  const isLoadingMore = propIsLoadingMore !== undefined ? propIsLoadingMore : internalLoading
+
+  const handleLoadMore = useCallback(() => {
+    if (isControlled) {
+      onLoadMore()
+    } else {
+      if (internalLoading || internalLimit >= (events ? events.length : 0)) return
+      setInternalLoading(true)
+      setTimeout(() => {
+        setInternalLimit(prev => prev + 10)
+        setInternalLoading(false)
+      }, 400)
+    }
+  }, [isControlled, onLoadMore, internalLoading, internalLimit, events])
+
+  useEffect(() => {
+    if (!hasMore || isLoadingMore) return
+
+    const sentinel = sentinelRef.current
+    if (!sentinel) return
+
+    if (typeof IntersectionObserver !== 'undefined') {
+      const observer = new IntersectionObserver((entries) => {
+        if (entries[0]?.isIntersecting) {
+          handleLoadMore()
+        }
+      }, {
+        rootMargin: '100px'
+      })
+
+      observer.observe(sentinel)
+      return () => observer.disconnect()
+    }
+  }, [hasMore, isLoadingMore, handleLoadMore])
+
   if (!events || events.length === 0) {
     return (
       <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)' }}>
@@ -13,10 +60,12 @@ export default function EventsList({ events }) {
     )
   }
 
+  const displayedEvents = isControlled ? events : events.slice(0, displayLimit)
+
   return (
-    <div className="events-list-wrapper">
+    <div className="events-list-wrapper" style={{ flexDirection: 'column' }}>
       <ul className="events-list">
-        {events.map((event) => (
+        {displayedEvents.map((event) => (
           <Link key={event.mgid} href={`/event/${event.mgid}`} scroll={false} style={{ width: '100%' }}>
             <li className="columns event-item" itemScope itemType="http://schema.org/Event">
               
@@ -61,6 +110,19 @@ export default function EventsList({ events }) {
           </Link>
         ))}
       </ul>
+
+      {/* Sentinel for IntersectionObserver */}
+      {hasMore && (
+        <div ref={sentinelRef} className="infinite-scroll-sentinel" style={{ height: '1px', width: '100%' }} />
+      )}
+
+      {/* Infinite Scroll Loading Spinner */}
+      {isLoadingMore && (
+        <div className="events-loading-spinner" role="status" aria-live="polite">
+          <i className="icon icon-spinner fa-spin" />
+          <span>Loading more specials...</span>
+        </div>
+      )}
     </div>
   )
 }
