@@ -10,8 +10,16 @@ describe('Footer Component', () => {
     const currentYear = new Date().getFullYear()
     expect(screen.getByText(new RegExp(`© ${currentYear} kwenchr, inc\\. All rights reserved\\.`))).toBeInTheDocument()
 
+    const termsLink = screen.getByRole('link', { name: /terms of service/i })
+    expect(termsLink).toBeInTheDocument()
+    expect(termsLink).toHaveAttribute('href', '/terms')
+
     const privacyLink = screen.getByRole('link', { name: /privacy policy/i })
     expect(privacyLink).toBeInTheDocument()
-    expect(privacyLink).toHaveAttribute('href', '#privacy')
+    expect(privacyLink).toHaveAttribute('href', '/privacy')
+
+    const cookieLink = screen.getByRole('link', { name: /cookie policy/i })
+    expect(cookieLink).toBeInTheDocument()
+    expect(cookieLink).toHaveAttribute('href', '/cookies')
   })
 })

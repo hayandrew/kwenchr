@@ -2,7 +2,7 @@
 import React from 'react'
 import { useRouter } from 'next/navigation'
 
-export default function Overlay({ title, children, buttons }) {
+export default function Overlay({ title, children, buttons, maxWidth, className }) {
   const router = useRouter()
 
   const onOverlayClose = () => {
@@ -16,7 +16,10 @@ export default function Overlay({ title, children, buttons }) {
 
   return (
     <div className="overlay">
-      <div className="overlay-wrapper">
+      <div 
+        className={`overlay-wrapper ${className || ''}`.trim()}
+        style={maxWidth ? { maxWidth } : undefined}
+      >
         <div className="overlay-header">
           <h3>{title}</h3>
           <button onClick={onOverlayClose} className="btn close">

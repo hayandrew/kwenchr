@@ -65,7 +65,6 @@ export default function Header() {
       <Link
         href="/"
         className="column logo"
-        style={{ display: "flex", alignItems: "center" }}
       >
         <div className="icon icon-kwenchr"></div>
       </Link>
