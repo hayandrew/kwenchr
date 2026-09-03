@@ -109,8 +109,6 @@
   background: rgba(13, 13, 24, 0.95);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
@@ -202,23 +200,31 @@
 }
 
 @media (max-width: 767px) {
-  .main-content {
-    height: auto !important;
-    overflow: visible !important;
+  .left-column {
+    position: sticky;
+    top: 56px;
+    z-index: 115;
+    padding: 6px 15px;
+    height: 56px;
+    min-height: 56px;
+    box-sizing: border-box;
+    background: rgba(13, 13, 24, 0.98);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
   }
 
-  .main-content-wrapper {
-    height: auto !important;
-    overflow: visible !important;
-  }
-
-  .main-content-left {
-    height: auto !important;
-    overflow: visible !important;
-  }
-
-  .main-content-left-inner {
-    height: auto !important;
-    overflow: visible !important;
+  .filters {
+    position: sticky;
+    top: 112px;
+    z-index: 110;
+    margin-bottom: 15px;
+    padding: 10px 15px;
+    background: rgba(13, 13, 24, 0.98);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
   }
 }

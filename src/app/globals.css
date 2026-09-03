@@ -225,30 +225,6 @@ button {
   }
 }
 
-/* BASE MOBILE LAYOUT & SCROLLING */
-@media (max-width: 767px) {
-  html,
-  body {
-    height: auto;
-    min-height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
-  }
-
-  .wrapper {
-    height: auto;
-    min-height: 100vh;
-    max-height: none;
-    overflow: visible;
-  }
-
-  .content-wrapper {
-    height: auto;
-    min-height: auto;
-    overflow: visible;
-    flex: 1 0 auto;
-  }
-}
 
 body.has-overlay {
   overflow: hidden !important;

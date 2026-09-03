@@ -203,12 +203,17 @@ header .profile-info {
   }
 
   header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
     gap: 8px;
     padding: 10px 16px;
     min-height: 56px;
+    height: 56px;
+    box-sizing: border-box;
   }
 
   header .logo {

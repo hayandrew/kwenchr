@@ -15,7 +15,16 @@
     display: none !important;
   }
   .leaderboard-ad.ad-wrapper {
+    position: sticky;
+    top: 0;
+    z-index: 120;
     margin: 0;
+    padding: 3px 0;
+    height: 56px;
+    min-height: 56px;
+    box-sizing: border-box;
+    background: var(--bg-primary);
+    border-bottom: 1px solid var(--border-color);
   }
 }
 
