@@ -1,8 +1,8 @@
 'use client'
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import Overlay from './Overlay'
-import dedupeFetch from './utilities/dedupeFetch'
+import Overlay from '@/components/Overlay'
+import dedupeFetch from '@/components/utilities/dedupeFetch'
 import './ProfileEdit.css'
 
 export default function ProfileEdit({ mgid }) {

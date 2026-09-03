@@ -6,15 +6,15 @@ import EventType from './EventType'
 describe('EventType Component', () => {
   it('renders with default label when value list is empty', () => {
     render(<EventType value={[]} onChange={() => {}} />)
-    expect(screen.getByText('Event Types')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Event Types/i })).toBeInTheDocument()
   })
 
   it('renders counter label based on selected values', () => {
     const { rerender } = render(<EventType value={['comedy']} onChange={() => {}} />)
-    expect(screen.getByText('1 Type Selected')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /1 Type Selected/i })).toBeInTheDocument()
 
     rerender(<EventType value={['comedy', 'happy-hour']} onChange={() => {}} />)
-    expect(screen.getByText('2 Types Selected')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /2 Types Selected/i })).toBeInTheDocument()
   })
 
   it('toggles dropdown and updates value list when checking options', () => {

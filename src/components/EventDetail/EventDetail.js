@@ -1,10 +1,10 @@
 'use client'
 import React, { useState, useEffect } from 'react'
-import Overlay from './Overlay'
-import formatTime from './utilities/formatTime'
-import calculateDistance from './utilities/calculateDistance'
-import { mapDbEventToClient } from './utilities/mapEvent'
-import dedupeFetch from './utilities/dedupeFetch'
+import Overlay from '@/components/Overlay'
+import formatTime from '@/components/utilities/formatTime'
+import calculateDistance from '@/components/utilities/calculateDistance'
+import { mapDbEventToClient } from '@/components/utilities/mapEvent'
+import dedupeFetch from '@/components/utilities/dedupeFetch'
 import './EventDetail.css'
 
 export default function EventDetail({ mgid }) {

@@ -1,8 +1,8 @@
 'use client'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
-import calculateDistance from './utilities/calculateDistance'
-import formatTime from './utilities/formatTime'
+import calculateDistance from '@/components/utilities/calculateDistance'
+import formatTime from '@/components/utilities/formatTime'
 import './EventsList.css'
 
 export default function EventsList({

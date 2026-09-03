@@ -8,7 +8,7 @@ describe('Distance Component', () => {
     render(<Distance value="1" onChange={() => {}} />)
 
     // Button displays "1 mile"
-    expect(screen.getByText('1 mile')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /1 mile/i })).toBeInTheDocument()
   })
 
   it('toggles dropdown on button click and lists options', () => {

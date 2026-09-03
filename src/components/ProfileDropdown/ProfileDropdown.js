@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { showToast } from './Toast'
+import { showToast } from '@/components/Toast'
 import './ProfileDropdown.css'
 
 export default function ProfileDropdown() {

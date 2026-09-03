@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
-import ProfileDropdown from "./ProfileDropdown";
+import ProfileDropdown from "@/components/ProfileDropdown";
 import "./Header.css";
 
 export default function Header() {

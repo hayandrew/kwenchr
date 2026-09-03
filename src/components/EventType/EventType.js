@@ -52,6 +52,8 @@ export default function EventType({ value = [], onChange }) {
       <button
         type="button"
         className="event-type-trigger-btn"
+        aria-label={selectedLabel}
+        title={selectedLabel}
         onClick={() => setActive(!active)}
       >
         <i className="icon icon-filter event-type-icon" />

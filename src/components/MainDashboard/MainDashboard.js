@@ -1,15 +1,15 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import DatePick from "./DatePick";
-import Location from "./Location";
-import EventType from "./EventType";
-import Distance from "./Distance";
-import EventsList from "./EventsList";
-import Ad from "./Ad";
-import { mapDbEventToClient } from "./utilities/mapEvent";
-import { getDistanceKm } from "./utilities/calculateDistance";
-import dedupeFetch from "./utilities/dedupeFetch";
+import DatePick from "@/components/DatePick";
+import Location from "@/components/Location";
+import EventType from "@/components/EventType";
+import Distance from "@/components/Distance";
+import EventsList from "@/components/EventsList";
+import Ad from "@/components/Ad";
+import { mapDbEventToClient } from "@/components/utilities/mapEvent";
+import { getDistanceKm } from "@/components/utilities/calculateDistance";
+import dedupeFetch from "@/components/utilities/dedupeFetch";
 import "./MainDashboard.css";
 
 let cachedAllEvents = null;

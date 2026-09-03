@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react'
 import Location from './Location'
 
 // Mock Places subcomponent
-vi.mock('./Places', () => ({
+vi.mock('@/components/Places', () => ({
   default: () => <div data-testid="mock-places" />
 }))
 

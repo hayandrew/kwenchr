@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react'
 import Header from './Header'
 
 // Mock ProfileDropdown
-vi.mock('./ProfileDropdown', () => ({
+vi.mock('@/components/ProfileDropdown', () => ({
   default: () => <div data-testid="mock-profile-dropdown" />
 }))
 

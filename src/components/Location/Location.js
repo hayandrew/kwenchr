@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect } from 'react'
-import Places from './Places'
+import Places from '@/components/Places'
 import './Location.css'
 
 export default function Location({ onLocationChange }) {

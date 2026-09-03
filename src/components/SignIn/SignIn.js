@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import Overlay from "./Overlay";
-import { showToast } from "./Toast";
+import Overlay from "@/components/Overlay";
+import { showToast } from "@/components/Toast";
 import "./SignIn.css";
 
 export default function SignIn() {

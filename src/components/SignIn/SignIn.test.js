@@ -3,9 +3,9 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, fireEvent, waitFor } from '@testing-library/react'
 import SignIn from './SignIn'
 import { useRouter } from 'next/navigation'
-import { showToast } from './Toast'
+import { showToast } from '@/components/Toast'
 
-vi.mock('./Toast', () => ({
+vi.mock('@/components/Toast', () => ({
   default: () => null,
   showToast: vi.fn()
 }))

@@ -37,6 +37,8 @@ export default function Distance({ value, onChange }) {
       <button
         type="button"
         className="distance-trigger-btn"
+        aria-label={selectedOption.label}
+        title={selectedOption.label}
         onClick={() => setActive(!active)}
       >
         <i className="icon icon-map-marker-alt distance-icon" />

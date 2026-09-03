@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
-import Overlay from './Overlay'
-import EventsList from './EventsList'
+import Overlay from '@/components/Overlay'
+import EventsList from '@/components/EventsList'
 import staticEvents from '@/data/events'
 import './MyEvents.css'
 
