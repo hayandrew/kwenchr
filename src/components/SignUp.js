@@ -127,7 +127,7 @@ export default function SignUp() {
                 borderRadius: "6px",
                 color: "white",
                 padding: "10px 14px",
-                fontSize: "14px",
+                fontSize: "16px",
                 outline: "none",
               }}
             />
@@ -157,7 +157,7 @@ export default function SignUp() {
                 borderRadius: "6px",
                 color: "white",
                 padding: "10px 14px",
-                fontSize: "14px",
+                fontSize: "16px",
                 outline: "none",
               }}
             />
@@ -187,7 +187,7 @@ export default function SignUp() {
                 borderRadius: "6px",
                 color: "white",
                 padding: "10px 14px",
-                fontSize: "14px",
+                fontSize: "16px",
                 outline: "none",
               }}
             />
@@ -217,7 +217,7 @@ export default function SignUp() {
                 borderRadius: "6px",
                 color: "white",
                 padding: "10px 14px",
-                fontSize: "14px",
+                fontSize: "16px",
                 outline: "none",
               }}
             />
