@@ -1,7 +1,7 @@
 import React from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
-import MainDashboard from './MainDashboard'
+import MainDashboard, { clearDashboardCache } from './MainDashboard'
 import moment from 'moment'
 
 // Mock Google maps just in case it is requested by Places/Location subcomponents
@@ -22,6 +22,7 @@ describe('MainDashboard Component', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     window.sessionStorage.clear()
+    clearDashboardCache()
   })
 
   it('fetches events on mount and displays them', async () => {
@@ -114,5 +115,48 @@ describe('MainDashboard Component', () => {
       expect(screen.getByText('Standup Comedy Night')).toBeInTheDocument()
       expect(screen.queryByText('Irish Pub Happy Hour')).not.toBeInTheDocument()
     })
+  })
+
+  it('preserves cached events and restores scroll position across instances', async () => {
+    const todayStr = moment().format('YYYY-MM-DD')
+    const mockEvents = [
+      {
+        _id: 'event-1',
+        name: 'Irish Pub Happy Hour',
+        short_description: 'Cheap Guinness',
+        start_time: `${todayStr}T17:00:00.000Z`,
+        end_time: `${todayStr}T20:00:00.000Z`,
+        tags: ['happy-hour'],
+        venue_name: 'The Dubliner',
+        venue_location: '40.7356,-74.0253'
+      }
+    ]
+
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve(mockEvents),
+      clone: function() { return this; }
+    })
+
+    const { unmount } = render(<MainDashboard />)
+    await waitFor(() => {
+      expect(screen.getByText('Irish Pub Happy Hour')).toBeInTheDocument()
+    })
+
+    // Simulate user scrolling center-column
+    const centerCol = document.querySelector('.center-column')
+    centerCol.scrollTop = 450
+    fireEvent.scroll(centerCol)
+
+    // Unmount (simulating navigation to /event/event-1)
+    unmount()
+
+    // Render new instance (as happens on /event/event-1 or returning to /)
+    render(<MainDashboard><div>Modal Child</div></MainDashboard>)
+
+    // Event should immediately be in the document without waiting for fetch
+    expect(screen.getByText('Irish Pub Happy Hour')).toBeInTheDocument()
+    const newCenterCol = document.querySelector('.center-column')
+    expect(newCenterCol.scrollTop).toBe(450)
   })
 })

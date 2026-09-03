@@ -106,4 +106,37 @@ describe('Places Component', () => {
       expect(cached.isCurrentLocation).toBe(true)
     })
   })
+
+  it('clears location and reverts to current location when clicking the x button', async () => {
+    const handleLocationChange = vi.fn()
+    render(<Places onLocationChange={handleLocationChange} />)
+    const input = screen.getByPlaceholderText('Choose Location...')
+
+    // Select a custom location first
+    fireEvent.focus(input)
+    fireEvent.change(input, { target: { value: 'New' } })
+
+    const suggestionItem = await screen.findByText('New York')
+    fireEvent.mouseDown(suggestionItem)
+
+    await waitFor(() => {
+      expect(input.value).toBe('New York, NY, USA')
+    })
+
+    // The clear (x) button should be visible now
+    const clearButton = screen.getByRole('button', { name: /clear location search/i })
+    expect(clearButton).toBeInTheDocument()
+
+    // Click the x button
+    fireEvent.click(clearButton)
+
+    await waitFor(() => {
+      expect(input.value).toBe('')
+      expect(navigator.geolocation.getCurrentPosition).toHaveBeenCalled()
+      expect(handleLocationChange).toHaveBeenCalledWith({ lat: 40.7796, lng: -74.0238 })
+      const cached = JSON.parse(window.sessionStorage.getItem('kwenchr_location'))
+      expect(cached.isCurrentLocation).toBe(true)
+      expect(screen.getByPlaceholderText('Current Location')).toBeInTheDocument()
+    })
+  })
 })

@@ -1,10 +1,8 @@
 'use client'
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import Places from './Places'
 
 export default function Location({ onLocationChange }) {
-  const [location, setLocation] = useState(null)
-
   useEffect(() => {
     if (typeof window === 'undefined') return
 
@@ -17,7 +15,6 @@ export default function Location({ onLocationChange }) {
         // Use cache if it is less than 5 minutes old (300000ms)
         if (age < 5 * 60 * 1000) {
           console.log(`Using cached geolocation (age: ${Math.round(age / 1000)}s)`)
-          setLocation(cached)
           if (onLocationChange && cached.coords) {
             onLocationChange({ lat: cached.coords.latitude, lng: cached.coords.longitude })
           }
@@ -45,7 +42,6 @@ export default function Location({ onLocationChange }) {
         }
         sessionStorage.setItem('kwenchr_location', JSON.stringify(cachedData))
         window.dispatchEvent(new Event('locationChange'))
-        setLocation(cachedData)
         if (onLocationChange) {
           onLocationChange({ lat: position.coords.latitude, lng: position.coords.longitude })
         }

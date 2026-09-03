@@ -109,6 +109,7 @@ export default function Places({ onLocationChange }) {
     setSuggestions([]);
     setAddress("");
     setConfirmedAddress("");
+    setPlaceholder("Current Location");
     setIsFocused(false);
     if (typeof document !== "undefined" && document.activeElement) {
       document.activeElement.blur();
@@ -240,10 +241,12 @@ export default function Places({ onLocationChange }) {
     }
   };
 
-  const handleCloseClick = () => {
-    setAddress(confirmedAddress);
-    setSuggestions([]);
-    setActiveSuggestionIndex(-1);
+  const handleCloseClick = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    handleUseCurrentLocation();
   };
 
   return (
@@ -265,6 +268,7 @@ export default function Places({ onLocationChange }) {
               type="button"
               className="clear-button"
               onClick={handleCloseClick}
+              onMouseDown={(e) => e.preventDefault()}
               aria-label="Clear location search"
             >
               <i className="icon icon-close" />

@@ -1,5 +1,4 @@
-"use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Datepicker from "react-datepicker";
 import moment from "moment";
 
@@ -11,10 +10,10 @@ const DateCustomInput = React.forwardRef(
       ref={ref}
       style={{ cursor: "pointer", textAlign: "center", outline: "none" }}
     >
-      <div className="datepicker-weekday datepicker-output">{weekday}</div>
-      <div className="datepicker-month datepicker-output">{month}</div>
-      <div className="datepicker-date datepicker-output">{day}</div>
-      <div className="datepicker-year datepicker-output">{year}</div>
+      <div className="datepicker-weekday datepicker-output" suppressHydrationWarning>{weekday}</div>
+      <div className="datepicker-month datepicker-output" suppressHydrationWarning>{month}</div>
+      <div className="datepicker-date datepicker-output" suppressHydrationWarning>{day}</div>
+      <div className="datepicker-year datepicker-output" suppressHydrationWarning>{year}</div>
       <div
         className="datepicker-button datepicker-button-down"
         style={{ pointerEvents: "none", margin: "6px auto 0" }}
@@ -27,27 +26,12 @@ const DateCustomInput = React.forwardRef(
 DateCustomInput.displayName = "DateCustomInput";
 
 export default function DatePick({ currentDate, updateDate }) {
-  const [startDate, setStartDate] = useState(() => {
-    if (currentDate) {
-      return currentDate.toDate ? currentDate.toDate() : new Date(currentDate);
-    }
-    return null;
-  });
-
-  useEffect(() => {
-    if (currentDate) {
-      const nextDate = currentDate.toDate
-        ? currentDate.toDate()
-        : new Date(currentDate);
-      if (!startDate || startDate.getTime() !== nextDate.getTime()) {
-        setStartDate(nextDate);
-      }
-    }
-  }, [currentDate, startDate]);
+  const startDate = currentDate
+    ? (currentDate.toDate ? currentDate.toDate() : new Date(currentDate))
+    : null;
 
   const handleChange = (date) => {
     const momentDate = moment(date);
-    setStartDate(date);
     updateDate(momentDate);
   };
 

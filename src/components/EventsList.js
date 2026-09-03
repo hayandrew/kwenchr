@@ -17,7 +17,7 @@ export default function EventsList({ events }) {
     <div className="events-list-wrapper">
       <ul className="events-list">
         {events.map((event) => (
-          <Link key={event.mgid} href={`/event/${event.mgid}`} style={{ width: '100%' }}>
+          <Link key={event.mgid} href={`/event/${event.mgid}`} scroll={false} style={{ width: '100%' }}>
             <li className="columns event-item" itemScope itemType="http://schema.org/Event">
               
               {/* Event Image */}

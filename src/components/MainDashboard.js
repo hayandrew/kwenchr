@@ -11,65 +11,28 @@ import { mapDbEventToClient } from './utilities/mapEvent'
 import { getDistanceKm } from './utilities/calculateDistance'
 import dedupeFetch from './utilities/dedupeFetch'
 
+let cachedAllEvents = null
+let cachedScrollTop = 0
+let cachedCurrentDate = null
+
+export function clearDashboardCache() {
+  cachedAllEvents = null
+  cachedScrollTop = 0
+  cachedCurrentDate = null
+}
+
 export default function MainDashboard({ children }) {
-  const [currentDate, setCurrentDate] = useState(null)
+  const centerColRef = React.useRef(null)
+  const leftWrapperRef = React.useRef(null)
+
+  const [currentDate, setCurrentDate] = useState(() => cachedCurrentDate || moment())
   const [eventType, setEventType] = useState([])
   const [maxDistance, setMaxDistance] = useState('all')
-  const [allEvents, setAllEvents] = useState([])
-  const [events, setEvents] = useState([])
+  const [allEvents, setAllEvents] = useState(() => cachedAllEvents || [])
   const [userCoords, setUserCoords] = useState({ lat: 40.7796, lng: -74.0238 })
 
-  // Memorize and sort events by closest distance
+  // Memorize, filter, and sort events by closest distance synchronously
   const sortedEvents = React.useMemo(() => {
-    const eventsWithDistance = events.map(event => {
-      let distance = Infinity
-      if (event.venue && event.venue.location) {
-        const parts = event.venue.location.split(',')
-        if (parts.length === 2) {
-          const venueLat = parseFloat(parts[0])
-          const venueLng = parseFloat(parts[1])
-          if (!isNaN(venueLat) && !isNaN(venueLng)) {
-            distance = getDistanceKm(userCoords.lat, userCoords.lng, venueLat, venueLng)
-          }
-        }
-      }
-      return { ...event, _distance: distance }
-    })
-
-    return eventsWithDistance.sort((a, b) => a._distance - b._distance)
-  }, [events, userCoords])
-
-  const fetchEvents = async () => {
-    try {
-      const res = await dedupeFetch('/api/events')
-      if (res.ok) {
-        const rawEvents = await res.json()
-        const mapped = rawEvents.map(mapDbEventToClient)
-        setAllEvents(mapped)
-      } else {
-        console.error('Failed to load events from database API')
-      }
-    } catch (e) {
-      console.error('Error fetching events:', e)
-    }
-  }
-
-  useEffect(() => {
-    let initialDate = moment()
-    if (typeof window !== 'undefined') {
-      const stored = sessionStorage.getItem('kwenchr_current_date')
-      if (stored) {
-        initialDate = moment(stored)
-      } else {
-        sessionStorage.setItem('kwenchr_current_date', initialDate.format('YYYY-MM-DD'))
-      }
-    }
-    setCurrentDate(initialDate)
-    fetchEvents()
-  }, [])
-
-  // Combined reactive filter runner
-  useEffect(() => {
     let filtered = [...allEvents]
 
     // 1. Filter by selected date
@@ -116,10 +79,90 @@ export default function MainDashboard({ children }) {
       })
     }
 
-    setEvents(filtered)
+    // 4. Sort by closest distance
+    const eventsWithDistance = filtered.map(event => {
+      let distance = Infinity
+      if (event.venue && event.venue.location) {
+        const parts = event.venue.location.split(',')
+        if (parts.length === 2) {
+          const venueLat = parseFloat(parts[0])
+          const venueLng = parseFloat(parts[1])
+          if (!isNaN(venueLat) && !isNaN(venueLng)) {
+            distance = getDistanceKm(userCoords.lat, userCoords.lng, venueLat, venueLng)
+          }
+        }
+      }
+      return { ...event, _distance: distance }
+    })
+
+    return eventsWithDistance.sort((a, b) => a._distance - b._distance)
   }, [allEvents, currentDate, eventType, maxDistance, userCoords])
 
+  useEffect(() => {
+    let isCancelled = false
+    const loadEvents = async () => {
+      try {
+        const res = await dedupeFetch('/api/events')
+        if (res.ok && !isCancelled) {
+          const rawEvents = await res.json()
+          const mapped = rawEvents.map(mapDbEventToClient)
+          cachedAllEvents = mapped
+          setAllEvents(mapped)
+        } else if (!res.ok) {
+          console.error('Failed to load events from database API')
+        }
+      } catch (e) {
+        console.error('Error fetching events:', e)
+      }
+    }
+
+    loadEvents()
+    return () => {
+      isCancelled = true
+    }
+  }, [])
+
+  // Track scroll position on the actual scrollable containers (.center-column on desktop, .main-content-left on mobile)
+  useEffect(() => {
+    const handleScroll = (e) => {
+      if (!children && e.target && typeof e.target.scrollTop === 'number') {
+        if (e.target.scrollTop > 0) {
+          cachedScrollTop = e.target.scrollTop
+        }
+      }
+    }
+
+    const centerEl = centerColRef.current
+    const leftEl = leftWrapperRef.current
+
+    if (centerEl) centerEl.addEventListener('scroll', handleScroll, { passive: true })
+    if (leftEl) leftEl.addEventListener('scroll', handleScroll, { passive: true })
+
+    return () => {
+      if (centerEl) centerEl.removeEventListener('scroll', handleScroll)
+      if (leftEl) leftEl.removeEventListener('scroll', handleScroll)
+    }
+  }, [children])
+
+  // Restore scroll position on the container when mounted or when sortedEvents change
+  useEffect(() => {
+    if (cachedScrollTop > 0) {
+      const restore = () => {
+        if (centerColRef.current && centerColRef.current.scrollTop !== cachedScrollTop) {
+          centerColRef.current.scrollTop = cachedScrollTop
+        }
+        if (leftWrapperRef.current && leftWrapperRef.current.scrollTop !== cachedScrollTop) {
+          leftWrapperRef.current.scrollTop = cachedScrollTop
+        }
+      }
+      restore()
+      const raf = requestAnimationFrame(restore)
+      return () => cancelAnimationFrame(raf)
+    }
+  }, [sortedEvents])
+
   const updateDate = (date) => {
+    cachedCurrentDate = date
     setCurrentDate(date)
     if (typeof window !== 'undefined') {
       sessionStorage.setItem('kwenchr_current_date', date.format('YYYY-MM-DD'))
@@ -133,7 +176,7 @@ export default function MainDashboard({ children }) {
   return (
     <div className="main-content">
       <div className="main-content-wrapper">
-        <div className="main-content-left">
+        <div className="main-content-left" ref={leftWrapperRef}>
           
           {/* Top Leaderboard Ad */}
           <div className="leaderboard-ad ad-wrapper">
@@ -162,7 +205,7 @@ export default function MainDashboard({ children }) {
             </div>
 
             {/* Center Content Column */}
-            <div className="center-column">
+            <div className="center-column" ref={centerColRef}>
               <div className="columns filters">
                 <Location onLocationChange={setUserCoords} />
                 <EventType value={eventType} onChange={handleTypeChange} />
