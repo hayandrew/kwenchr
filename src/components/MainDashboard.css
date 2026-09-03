@@ -101,7 +101,7 @@
   top: 0;
   z-index: 100;
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row;
   align-items: center;
   gap: 15px;
   margin-bottom: 15px;

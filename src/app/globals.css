@@ -100,7 +100,6 @@ button {
 
 .columns {
   display: flex;
-  flex-flow: row wrap;
   justify-content: center;
 }
 
@@ -224,7 +223,6 @@ button {
     opacity: 1;
   }
 }
-
 
 body.has-overlay {
   overflow: hidden !important;

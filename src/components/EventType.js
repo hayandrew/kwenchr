@@ -45,14 +45,17 @@ export default function EventType({ value = [], onChange }) {
       : `${value.length} Type${value.length > 1 ? "s" : ""} Selected`;
 
   return (
-    <div className="category-filter-dropdown event-type-dropdown" ref={dropdownRef}>
+    <div
+      className="category-filter-dropdown event-type-dropdown"
+      ref={dropdownRef}
+    >
       <button
         type="button"
         className="event-type-trigger-btn"
         onClick={() => setActive(!active)}
       >
         <i className="icon icon-filter event-type-icon" />
-        <span>{selectedLabel}</span>
+        {/* <span>{selectedLabel}</span> */}
         <i className="icon icon-chevron-down event-type-chevron" />
       </button>
 
