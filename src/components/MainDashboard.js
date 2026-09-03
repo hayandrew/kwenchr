@@ -35,12 +35,35 @@ export default function MainDashboard({ children }) {
   const [eventType, setEventType] = useState([]);
   const [maxDistance, setMaxDistance] = useState("all");
   const [allEvents, setAllEvents] = useState(() => cachedAllEvents || []);
-  const [userCoords, setUserCoords] = useState({ lat: 40.7796, lng: -74.0238 });
+  const [userCoords, setUserCoords] = useState(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const cachedStr = sessionStorage.getItem("kwenchr_location");
+        if (cachedStr) {
+          const cached = JSON.parse(cachedStr);
+          if (
+            cached.coords &&
+            typeof cached.coords.latitude === "number" &&
+            typeof cached.coords.longitude === "number"
+          ) {
+            return {
+              lat: cached.coords.latitude,
+              lng: cached.coords.longitude,
+            };
+          }
+        }
+      } catch (e) {}
+    }
+    return { lat: 40.7796, lng: -74.0238 };
+  });
   const [page, setPage] = useState(() => cachedPage || 1);
   const [hasMore, setHasMore] = useState(() =>
     cachedHasMore !== null ? cachedHasMore : true,
   );
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+
+  const userCoordsRef = React.useRef(userCoords);
+  const requestIdRef = React.useRef(0);
 
   // Helper to calculate distance to venue
   const getDistanceToVenue = React.useCallback((event, coords) => {
@@ -124,12 +147,18 @@ export default function MainDashboard({ children }) {
     let isCancelled = false;
     if (!cachedAllEvents) {
       const loadInitialEvents = async () => {
+        const reqId = ++requestIdRef.current;
         try {
-          const res = await dedupeFetch("/api/events?page=1&limit=10");
-          if (res.ok && !isCancelled) {
+          const coords = userCoordsRef.current;
+          const geoQuery =
+            coords && typeof coords.lat === "number" && typeof coords.lng === "number"
+              ? `&lat=${coords.lat}&lng=${coords.lng}`
+              : "";
+          const res = await dedupeFetch(`/api/events?page=1&limit=10${geoQuery}`);
+          if (res.ok && !isCancelled && reqId === requestIdRef.current) {
             const rawEvents = await res.json();
             const mapped = rawEvents.map(mapDbEventToClient);
-            const sorted = sortBatchByDistance(mapped, userCoords);
+            const sorted = sortBatchByDistance(mapped, userCoordsRef.current);
             cachedAllEvents = sorted;
             cachedPage = 1;
             const more = rawEvents.length === 10;
@@ -151,19 +180,124 @@ export default function MainDashboard({ children }) {
     return () => {
       isCancelled = true;
     };
-  }, [sortBatchByDistance, userCoords]);
+  }, [sortBatchByDistance]);
+
+  // Handle location change: fetch events for new coordinates and replace existing events
+  const handleLocationChange = React.useCallback(
+    async (newCoords) => {
+      if (
+        !newCoords ||
+        typeof newCoords.lat !== "number" ||
+        typeof newCoords.lng !== "number"
+      ) {
+        return;
+      }
+
+      const prev = userCoordsRef.current;
+      const isChanged =
+        !prev || prev.lat !== newCoords.lat || prev.lng !== newCoords.lng;
+
+      if (!isChanged) {
+        return;
+      }
+
+      userCoordsRef.current = newCoords;
+      setUserCoords(newCoords);
+
+      if (typeof window !== "undefined") {
+        try {
+          const cachedStr = sessionStorage.getItem("kwenchr_location");
+          let cached = cachedStr ? JSON.parse(cachedStr) : {};
+          cached.coords = {
+            latitude: newCoords.lat,
+            longitude: newCoords.lng,
+            accuracy: 1,
+          };
+          cached.timestamp = Date.now();
+          sessionStorage.setItem("kwenchr_location", JSON.stringify(cached));
+        } catch (e) {}
+      }
+
+      const reqId = ++requestIdRef.current;
+      try {
+        const res = await dedupeFetch(
+          `/api/events?page=1&limit=10&lat=${newCoords.lat}&lng=${newCoords.lng}`,
+        );
+        if (res.ok && reqId === requestIdRef.current) {
+          const rawEvents = await res.json();
+          const mapped = rawEvents.map(mapDbEventToClient);
+          const sorted = sortBatchByDistance(mapped, newCoords);
+          cachedAllEvents = sorted;
+          cachedPage = 1;
+          const more = rawEvents.length === 10;
+          cachedHasMore = more;
+          setAllEvents(sorted);
+          setPage(1);
+          setHasMore(more);
+          cachedScrollTop = 0;
+          if (centerColRef.current) {
+            centerColRef.current.scrollTop = 0;
+          }
+          if (leftWrapperRef.current) {
+            leftWrapperRef.current.scrollTop = 0;
+          }
+        } else if (!res.ok) {
+          console.error("Failed to load events from database API");
+        }
+      } catch (e) {
+        console.error("Error fetching events on location change:", e);
+      }
+    },
+    [sortBatchByDistance],
+  );
+
+  // Listen for storage or locationChange window events
+  useEffect(() => {
+    const handleWindowLocationChange = () => {
+      if (typeof window === "undefined") return;
+      try {
+        const cachedStr = sessionStorage.getItem("kwenchr_location");
+        if (cachedStr) {
+          const cached = JSON.parse(cachedStr);
+          if (
+            cached.coords &&
+            typeof cached.coords.latitude === "number" &&
+            typeof cached.coords.longitude === "number"
+          ) {
+            handleLocationChange({
+              lat: cached.coords.latitude,
+              lng: cached.coords.longitude,
+            });
+          }
+        }
+      } catch (e) {}
+    };
+
+    window.addEventListener("locationChange", handleWindowLocationChange);
+    return () => {
+      window.removeEventListener("locationChange", handleWindowLocationChange);
+    };
+  }, [handleLocationChange]);
 
   // Fetch next 10 events from API on infinite scroll and append below
   const loadMore = React.useCallback(async () => {
     if (isLoadingMore || !hasMore) return;
     setIsLoadingMore(true);
+    const reqId = requestIdRef.current;
     const nextPage = page + 1;
     try {
-      const res = await dedupeFetch(`/api/events?page=${nextPage}&limit=10`);
-      if (res.ok) {
+      const coords = userCoordsRef.current;
+      const geoQuery =
+        coords && typeof coords.lat === "number" && typeof coords.lng === "number"
+          ? `&lat=${coords.lat}&lng=${coords.lng}`
+          : "";
+      const res = await dedupeFetch(
+        `/api/events?page=${nextPage}&limit=10${geoQuery}`,
+      );
+      if (res.ok && reqId === requestIdRef.current) {
         const rawEvents = await res.json();
         const mapped = rawEvents.map(mapDbEventToClient);
-        const sortedNext = sortBatchByDistance(mapped, userCoords);
+        const sortedNext = sortBatchByDistance(mapped, userCoordsRef.current);
         setAllEvents((prev) => {
           const existingIds = new Set(prev.map((e) => e.mgid || e._id || e.id));
           const uniqueNext = sortedNext.filter(
@@ -184,7 +318,7 @@ export default function MainDashboard({ children }) {
     } finally {
       setIsLoadingMore(false);
     }
-  }, [isLoadingMore, hasMore, page, sortBatchByDistance, userCoords]);
+  }, [isLoadingMore, hasMore, page, sortBatchByDistance]);
 
   // Track scroll position on the actual scrollable containers (.center-column on desktop, .main-content-left on mobile)
   useEffect(() => {
@@ -289,7 +423,7 @@ export default function MainDashboard({ children }) {
             {/* Center Content Column */}
             <div className="center-column" ref={centerColRef}>
               <div className="columns filters">
-                <Location onLocationChange={setUserCoords} />
+                <Location onLocationChange={handleLocationChange} />
                 <EventType value={eventType} onChange={handleTypeChange} />
                 <Distance value={maxDistance} onChange={handleDistanceChange} />
               </div>

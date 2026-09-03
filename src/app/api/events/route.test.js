@@ -72,6 +72,44 @@ describe('Events API Routes (/api/events)', () => {
       expect(mockQuery.skip).toHaveBeenCalledWith(10)
       expect(mockQuery.limit).toHaveBeenCalledWith(10)
     })
+
+    it('sorts events by closest distance when lat and lng are provided', async () => {
+      const mockList = [
+        { name: 'Far Away Event', venue_location: '39.9526,-75.1652' }, // Philadelphia (~130km)
+        { name: 'Closest Event', venue_location: '40.7440,-74.0324' },  // Hoboken (0km)
+        { name: 'Medium Event', venue_location: '40.7282,-74.0324' },   // Jersey City (~1.7km)
+      ]
+      mockFind.mockResolvedValueOnce(mockList)
+
+      const request = new Request('http://localhost/api/events?lat=40.7440&lng=-74.0324')
+      const response = await GET(request)
+      expect(response.status).toBe(200)
+
+      const body = await response.json()
+      expect(body.map((e) => e.name)).toEqual(['Closest Event', 'Medium Event', 'Far Away Event'])
+    })
+
+    it('paginates correctly by closest first', async () => {
+      const mockList = [
+        { name: 'Far Away Event', venue_location: '39.9526,-75.1652' }, // Philadelphia (~130km)
+        { name: 'Closest Event', venue_location: '40.7440,-74.0324' },  // Hoboken (0km)
+        { name: 'Medium Event', venue_location: '40.7282,-74.0324' },   // Jersey City (~1.7km)
+      ]
+
+      // Page 1 with limit 2 -> Closest and Medium
+      mockFind.mockResolvedValueOnce(mockList)
+      const req1 = new Request('http://localhost/api/events?lat=40.7440&lng=-74.0324&page=1&limit=2')
+      const res1 = await GET(req1)
+      const body1 = await res1.json()
+      expect(body1.map((e) => e.name)).toEqual(['Closest Event', 'Medium Event'])
+
+      // Page 2 with limit 2 -> Far Away Event
+      mockFind.mockResolvedValueOnce(mockList)
+      const req2 = new Request('http://localhost/api/events?lat=40.7440&lng=-74.0324&page=2&limit=2')
+      const res2 = await GET(req2)
+      const body2 = await res2.json()
+      expect(body2.map((e) => e.name)).toEqual(['Far Away Event'])
+    })
   })
 
   describe('POST', () => {
