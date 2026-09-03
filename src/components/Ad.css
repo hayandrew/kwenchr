@@ -6,6 +6,19 @@
   width: 100%;
 }
 
+.leaderboard-ad.ad-wrapper {
+  margin: 15px 0;
+}
+
+@media (max-width: 767px) {
+  .left-column .ad-wrapper {
+    display: none !important;
+  }
+  .leaderboard-ad.ad-wrapper {
+    margin: 0;
+  }
+}
+
 .ad-container {
   background: linear-gradient(
     135deg,
@@ -29,4 +42,12 @@
   align-items: center;
   justify-content: center;
   background: rgba(255, 255, 255, 0.03);
+}
+
+.ad-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
 }
