@@ -8,6 +8,7 @@ const DateCustomInput = React.forwardRef(
     <div
       onClick={onClick}
       ref={ref}
+      className="datepicker-input-display"
       style={{ cursor: "pointer", textAlign: "center", outline: "none" }}
     >
       <div className="datepicker-weekday datepicker-output" suppressHydrationWarning>{weekday}</div>
@@ -16,7 +17,7 @@ const DateCustomInput = React.forwardRef(
       <div className="datepicker-year datepicker-output" suppressHydrationWarning>{year}</div>
       <div
         className="datepicker-button datepicker-button-down"
-        style={{ pointerEvents: "none", margin: "6px auto 0" }}
+        style={{ pointerEvents: "none" }}
       >
         <i className="datepicker-down icon icon-calendar-alt"></i>
       </div>

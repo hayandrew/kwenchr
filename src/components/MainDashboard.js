@@ -198,7 +198,7 @@ export default function MainDashboard({ children }) {
                 />
               )}
               
-              <div className="ad-wrapper">
+              <div className="ad-wrapper hidden-sm-down">
                 <Ad extClass="hidden-xl-up hidden-sm-down" height="250" width="300" />
                 <Ad extClass="hidden-lg-down" height="280" width="336" />
               </div>
