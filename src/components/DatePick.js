@@ -11,10 +11,30 @@ const DateCustomInput = React.forwardRef(
       className="datepicker-input-display"
       style={{ cursor: "pointer", textAlign: "center", outline: "none" }}
     >
-      <div className="datepicker-weekday datepicker-output" suppressHydrationWarning>{weekday}</div>
-      <div className="datepicker-month datepicker-output" suppressHydrationWarning>{month}</div>
-      <div className="datepicker-date datepicker-output" suppressHydrationWarning>{day}</div>
-      <div className="datepicker-year datepicker-output" suppressHydrationWarning>{year}</div>
+      <div
+        className="datepicker-weekday datepicker-output"
+        suppressHydrationWarning
+      >
+        {weekday}
+      </div>
+      <div
+        className="datepicker-month datepicker-output"
+        suppressHydrationWarning
+      >
+        {month}
+      </div>
+      <div
+        className="datepicker-date datepicker-output"
+        suppressHydrationWarning
+      >
+        {day}
+      </div>
+      <div
+        className="datepicker-year datepicker-output"
+        suppressHydrationWarning
+      >
+        {year}
+      </div>
       <div
         className="datepicker-button datepicker-button-down"
         style={{ pointerEvents: "none" }}
@@ -28,7 +48,9 @@ DateCustomInput.displayName = "DateCustomInput";
 
 export default function DatePick({ currentDate, updateDate }) {
   const startDate = currentDate
-    ? (currentDate.toDate ? currentDate.toDate() : new Date(currentDate))
+    ? currentDate.toDate
+      ? currentDate.toDate()
+      : new Date(currentDate)
     : null;
 
   const handleChange = (date) => {
@@ -51,7 +73,7 @@ export default function DatePick({ currentDate, updateDate }) {
 
   const formatted = currentDate
     ? {
-        weekday: currentDate.format("dddd"),
+        weekday: currentDate.format("ddd"),
         month: currentDate.format("MMMM"),
         day: currentDate.date(),
         year: currentDate.year(),
