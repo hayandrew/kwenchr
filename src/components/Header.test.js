@@ -33,5 +33,28 @@ describe('Header Component', () => {
     render(<Header />)
     expect(screen.getByTestId('mock-profile-dropdown')).toBeInTheDocument()
     expect(screen.queryByRole('link', { name: 'Sign In' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /navigation menu/i })).not.toBeInTheDocument()
+  })
+
+  it('renders mobile nav toggle button and opens dropdown menu on click', async () => {
+    const { fireEvent } = await import('@testing-library/react')
+    render(<Header />)
+
+    const toggleBtn = screen.getByRole('button', { name: 'Open navigation menu' })
+    expect(toggleBtn).toBeInTheDocument()
+    expect(toggleBtn).toHaveAttribute('aria-expanded', 'false')
+
+    // Click toggle button to open mobile menu
+    fireEvent.click(toggleBtn)
+    expect(toggleBtn).toHaveAttribute('aria-expanded', 'true')
+    expect(screen.getByRole('button', { name: 'Close navigation menu' })).toBeInTheDocument()
+
+    // The dropdown contains links
+    const links = screen.getAllByRole('link', { name: /Sign In/i })
+    expect(links.length).toBeGreaterThanOrEqual(2) // desktop + mobile
+
+    // Click toggle button again to close
+    fireEvent.click(toggleBtn)
+    expect(toggleBtn).toHaveAttribute('aria-expanded', 'false')
   })
 })
