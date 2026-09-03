@@ -54,7 +54,7 @@ export default function EventsList({
 
   if (!events || events.length === 0) {
     return (
-      <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--text-muted)' }}>
+      <div className="events-empty-state">
         No specials found for this date.
       </div>
     )
@@ -63,10 +63,10 @@ export default function EventsList({
   const displayedEvents = isControlled ? events : events.slice(0, displayLimit)
 
   return (
-    <div className="events-list-wrapper" style={{ flexDirection: 'column' }}>
+    <div className="events-list-wrapper">
       <ul className="events-list">
         {displayedEvents.map((event) => (
-          <Link key={event.mgid} href={`/event/${event.mgid}`} scroll={false} style={{ width: '100%' }}>
+          <Link key={event.mgid} href={`/event/${event.mgid}`} scroll={false} prefetch={false} className="event-item-link">
             <li className="columns event-item" itemScope itemType="http://schema.org/Event">
               
               {/* Event Image */}
@@ -113,7 +113,7 @@ export default function EventsList({
 
       {/* Sentinel for IntersectionObserver */}
       {hasMore && (
-        <div ref={sentinelRef} className="infinite-scroll-sentinel" style={{ height: '1px', width: '100%' }} />
+        <div ref={sentinelRef} className="infinite-scroll-sentinel" />
       )}
 
       {/* Infinite Scroll Loading Spinner */}

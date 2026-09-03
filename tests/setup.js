@@ -21,7 +21,7 @@ vi.mock('next/navigation', () => ({
 // Mock next/link
 vi.mock('next/link', () => ({
   __esModule: true,
-  default: ({ children, href, onClick, scroll, ...props }) => (
+  default: ({ children, href, onClick, scroll, prefetch, ...props }) => (
     <a href={href} onClick={onClick} {...props}>
       {children}
     </a>
