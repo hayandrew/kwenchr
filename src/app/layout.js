@@ -3,6 +3,7 @@ import Script from 'next/script'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
 import GdprFooter from '@/components/GdprFooter'
+import AgeGate from '@/components/AgeGate'
 import ToastContainer from '@/components/Toast'
 import './globals.css'
 
@@ -28,6 +29,7 @@ export default function RootLayout({ children }) {
           </section>
           <Footer />
         </div>
+        <AgeGate />
         <GdprFooter />
         <ToastContainer />
         
