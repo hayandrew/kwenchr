@@ -824,7 +824,6 @@ footer {
     hsla(240, 10%, 15%, 0.4),
     hsla(240, 10%, 20%, 0.4)
   );
-  border: 1px dashed var(--border-glow);
   color: var(--text-muted);
   display: flex;
   align-items: center;
