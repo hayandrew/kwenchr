@@ -241,6 +241,9 @@ export default function MainDashboard({ children }) {
           if (leftWrapperRef.current) {
             leftWrapperRef.current.scrollTop = 0;
           }
+          if (typeof window !== "undefined") {
+            window.scrollTo(0, 0);
+          }
         } else if (!res.ok) {
           console.error("Failed to load events from database API");
         }
@@ -320,7 +323,7 @@ export default function MainDashboard({ children }) {
     }
   }, [isLoadingMore, hasMore, page, sortBatchByDistance]);
 
-  // Track scroll position on the actual scrollable containers (.center-column on desktop, .main-content-left on mobile)
+  // Track scroll position on the actual scrollable containers (.center-column on desktop, .main-content-left / window on mobile)
   useEffect(() => {
     const handleScroll = (e) => {
       if (!children && e.target && typeof e.target.scrollTop === "number") {
@@ -337,6 +340,23 @@ export default function MainDashboard({ children }) {
       }
     };
 
+    const handleWindowScroll = () => {
+      if (!children && typeof window !== "undefined") {
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        if (scrollTop > 0) {
+          cachedScrollTop = scrollTop;
+        }
+        const scrollHeight = document.documentElement.scrollHeight;
+        const clientHeight = window.innerHeight;
+        if (
+          scrollHeight > clientHeight &&
+          scrollHeight - scrollTop - clientHeight < 250
+        ) {
+          loadMore();
+        }
+      }
+    };
+
     const centerEl = centerColRef.current;
     const leftEl = leftWrapperRef.current;
 
@@ -344,10 +364,12 @@ export default function MainDashboard({ children }) {
       centerEl.addEventListener("scroll", handleScroll, { passive: true });
     if (leftEl)
       leftEl.addEventListener("scroll", handleScroll, { passive: true });
+    window.addEventListener("scroll", handleWindowScroll, { passive: true });
 
     return () => {
       if (centerEl) centerEl.removeEventListener("scroll", handleScroll);
       if (leftEl) leftEl.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("scroll", handleWindowScroll);
     };
   }, [children, loadMore]);
 
@@ -366,6 +388,13 @@ export default function MainDashboard({ children }) {
           leftWrapperRef.current.scrollTop !== cachedScrollTop
         ) {
           leftWrapperRef.current.scrollTop = cachedScrollTop;
+        }
+        if (
+          typeof window !== "undefined" &&
+          window.scrollY !== cachedScrollTop &&
+          window.innerWidth < 768
+        ) {
+          window.scrollTo(0, cachedScrollTop);
         }
       };
       restore();

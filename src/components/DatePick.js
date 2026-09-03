@@ -74,7 +74,7 @@ export default function DatePick({ currentDate, updateDate }) {
   const formatted = currentDate
     ? {
         weekday: currentDate.format("ddd"),
-        month: currentDate.format("MMMM"),
+        month: currentDate.format("MMM"),
         day: currentDate.date(),
         year: currentDate.year(),
       }

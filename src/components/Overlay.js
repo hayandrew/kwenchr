@@ -5,6 +5,15 @@ import { useRouter } from 'next/navigation'
 export default function Overlay({ title, children, buttons, maxWidth, className }) {
   const router = useRouter()
 
+  React.useEffect(() => {
+    if (typeof document !== 'undefined') {
+      document.body.classList.add('has-overlay')
+      return () => {
+        document.body.classList.remove('has-overlay')
+      }
+    }
+  }, [])
+
   const onOverlayClose = () => {
     // If there is history, navigate back; otherwise redirect to home
     if (typeof window !== 'undefined' && window.history.length > 1) {

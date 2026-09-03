@@ -1038,6 +1038,68 @@ footer {
 }
 
 @media (max-width: 767px) {
+  html,
+  body {
+    height: auto;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .wrapper {
+    height: auto;
+    min-height: 100vh;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .content-wrapper {
+    height: auto;
+    min-height: auto;
+    overflow: visible;
+    flex: 1 0 auto;
+  }
+
+  .main-content {
+    height: auto;
+    min-height: auto;
+    overflow: visible;
+  }
+
+  .main-content-wrapper {
+    height: auto;
+    min-height: auto;
+    overflow: visible;
+  }
+
+  .main-content-left {
+    height: auto;
+    min-height: auto;
+    overflow: visible;
+    -webkit-overflow-scrolling: auto;
+  }
+
+  .main-content-left-inner {
+    height: auto;
+    overflow: visible;
+  }
+
+  .center-column {
+    height: auto;
+    overflow: visible;
+  }
+
+  footer {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    margin-top: auto;
+  }
+
+  .overlay {
+    z-index: 99999 !important;
+  }
+
   .left-column {
     position: sticky;
     top: 0;
@@ -1195,9 +1257,30 @@ footer {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2000;
+  z-index: 99999;
   padding: 15px;
   animation: fadeIn 0.25s ease-out;
+}
+
+.content-wrapper:has(.overlay),
+.main-content:has(.overlay),
+.main-content-wrapper:has(.overlay),
+.main-content-left:has(.overlay),
+.main-content-left-inner:has(.overlay) {
+  z-index: 99999;
+}
+
+body.has-overlay {
+  overflow: hidden !important;
+}
+
+body.has-overlay header,
+body.has-overlay footer {
+  z-index: 100;
+}
+
+body.has-overlay .content-wrapper {
+  z-index: 99999;
 }
 
 .overlay-wrapper {

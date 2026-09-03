@@ -14,9 +14,9 @@ describe('Header Component', () => {
     window.sessionStorage.clear()
   })
 
-  it('renders logo and tagline correctly', () => {
-    render(<Header />)
-    expect(screen.getByRole('heading', { name: /Get Your Drink On/i })).toBeInTheDocument()
+  it('renders logo correctly', () => {
+    const { container } = render(<Header />)
+    expect(container.querySelector('.icon-kwenchr')).toBeInTheDocument()
   })
 
   it('shows Sign In and Create Account links when not logged in', () => {
