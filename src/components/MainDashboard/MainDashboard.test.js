@@ -385,4 +385,32 @@ describe('MainDashboard Component', () => {
     const farIndex = allRenderedTitles.indexOf('Far Special 1')
     expect(closeIndex).toBeLessThan(farIndex)
   })
+
+  it('hides filters button and marks filters as location-focused when location input is focused', async () => {
+    render(<MainDashboard />)
+
+    const filtersContainer = document.querySelector('.filters')
+    expect(filtersContainer).not.toHaveClass('location-focused')
+
+    const filterDropdown = document.querySelector('.filter-dropdown-wrapper')
+    expect(filterDropdown).not.toHaveClass('is-hidden')
+    expect(filterDropdown).not.toHaveStyle({ display: 'none' })
+
+    const input = screen.getByPlaceholderText(/Choose Location|Current Location/i)
+    fireEvent.focus(input)
+
+    await waitFor(() => {
+      expect(filtersContainer).toHaveClass('location-focused')
+      expect(filterDropdown).toHaveClass('is-hidden')
+      expect(filterDropdown).toHaveStyle({ display: 'none' })
+    })
+
+    fireEvent.blur(input)
+
+    await waitFor(() => {
+      expect(filtersContainer).not.toHaveClass('location-focused')
+      expect(filterDropdown).not.toHaveClass('is-hidden')
+      expect(filterDropdown).not.toHaveStyle({ display: 'none' })
+    })
+  })
 })

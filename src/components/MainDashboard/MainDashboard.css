@@ -35,6 +35,19 @@
   flex: none;
 }
 
+/* Hide filters button and expand location input to 100% width when location field is focused */
+.filters:has(.location-filter-container input:focus) .filter-dropdown-wrapper,
+.filters.location-focused .filter-dropdown-wrapper,
+.filter-dropdown-wrapper.is-hidden {
+  display: none !important;
+}
+
+.filters:has(.location-filter-container input:focus) .location-filter-container,
+.filters.location-focused .location-filter-container {
+  width: 100% !important;
+  flex: 1 1 100% !important;
+}
+
 .filter-container {
   display: flex;
   align-items: stretch;

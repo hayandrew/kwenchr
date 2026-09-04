@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import Places from '@/components/Places'
 import './Location.css'
 
-export default function Location({ onLocationChange }) {
+export default function Location({ onLocationChange, onFocusChange }) {
   useEffect(() => {
     if (typeof window === 'undefined') return
 
@@ -65,7 +65,7 @@ export default function Location({ onLocationChange }) {
       <label>
         <i className="icon icon-map-marker-alt" />
       </label>
-      <Places onLocationChange={onLocationChange} />
+      <Places onLocationChange={onLocationChange} onFocusChange={onFocusChange} />
     </div>
   )
 }

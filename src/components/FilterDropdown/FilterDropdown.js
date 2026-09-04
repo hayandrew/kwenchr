@@ -22,9 +22,17 @@ export default function FilterDropdown({
   onTypeChange,
   distance = "all",
   onDistanceChange,
+  hidden = false,
 }) {
   const [active, setActive] = useState(false);
   const dropdownRef = useRef(null);
+
+  // If hidden, ensure dropdown is closed
+  useEffect(() => {
+    if (hidden) {
+      setActive(false);
+    }
+  }, [hidden]);
 
   const handleCheckboxChange = (optionValue, checked) => {
     let updatedValues;
@@ -63,7 +71,11 @@ export default function FilterDropdown({
     (eventType && eventType.length > 0) || (distance && distance !== "all");
 
   return (
-    <div className="filter-dropdown-wrapper" ref={dropdownRef}>
+    <div
+      className={`filter-dropdown-wrapper ${hidden ? "is-hidden" : ""}`.trim()}
+      ref={dropdownRef}
+      style={hidden ? { display: "none" } : undefined}
+    >
       <button
         type="button"
         className={`filter-trigger-btn ${active ? "is-active" : ""} ${hasActiveFilters ? "has-filters" : ""}`.trim()}

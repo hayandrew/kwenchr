@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Places.css";
 
-export default function Places({ onLocationChange }) {
+export default function Places({ onLocationChange, onFocusChange }) {
   const [address, setAddress] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(-1);
@@ -14,6 +14,10 @@ export default function Places({ onLocationChange }) {
   const [placeholder, setPlaceholder] = useState("Choose Location...");
   const dropdownRef = useRef(null);
   const inputRef = useRef(null);
+
+  useEffect(() => {
+    onFocusChange?.(isFocused);
+  }, [isFocused, onFocusChange]);
 
   useEffect(() => {
     const checkLocationStorage = () => {
@@ -167,6 +171,10 @@ export default function Places({ onLocationChange }) {
     setAddress(selectedText);
     setSuggestions([]);
     setActiveSuggestionIndex(-1);
+    setIsFocused(false);
+    if (typeof document !== "undefined" && document.activeElement) {
+      document.activeElement.blur();
+    }
     setIsGeocoding(true);
 
     try {
@@ -242,6 +250,10 @@ export default function Places({ onLocationChange }) {
     } else if (e.key === "Escape") {
       setSuggestions([]);
       setActiveSuggestionIndex(-1);
+      setIsFocused(false);
+      if (inputRef.current) {
+        inputRef.current.blur();
+      }
     }
   };
 

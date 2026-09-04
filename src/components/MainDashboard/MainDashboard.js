@@ -89,6 +89,7 @@ export default function MainDashboard({ children }) {
     cachedHasMore !== null ? cachedHasMore : true,
   );
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [isLocationFocused, setIsLocationFocused] = useState(false);
 
   const userCoordsRef = useRef(userCoords);
   useEffect(() => {
@@ -519,13 +520,19 @@ export default function MainDashboard({ children }) {
           </div>
         </div>
         <div className="center-column" ref={centerColRef}>
-          <div className="filters">
-            <Location onLocationChange={handleLocationChange} />
+          <div
+            className={`filters ${isLocationFocused ? "location-focused" : ""}`.trim()}
+          >
+            <Location
+              onLocationChange={handleLocationChange}
+              onFocusChange={setIsLocationFocused}
+            />
             <FilterDropdown
               eventType={eventType}
               onTypeChange={handleTypeChange}
               distance={maxDistance}
               onDistanceChange={handleDistanceChange}
+              hidden={isLocationFocused}
             />
           </div>
           <EventsList

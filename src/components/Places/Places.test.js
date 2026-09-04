@@ -140,4 +140,16 @@ describe('Places Component', () => {
       expect(document.activeElement).toBe(input)
     })
   })
+
+  it('calls onFocusChange when input receives focus and blur', () => {
+    const handleFocusChange = vi.fn()
+    render(<Places onLocationChange={() => {}} onFocusChange={handleFocusChange} />)
+    const input = screen.getByPlaceholderText('Choose Location...')
+
+    fireEvent.focus(input)
+    expect(handleFocusChange).toHaveBeenCalledWith(true)
+
+    fireEvent.blur(input)
+    expect(handleFocusChange).toHaveBeenCalledWith(false)
+  })
 })

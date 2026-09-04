@@ -125,4 +125,40 @@ describe('FilterDropdown Component', () => {
 
     expect(screen.queryByTestId('filter-dropdown-menu')).not.toBeInTheDocument()
   })
+
+  it('applies hidden styling and closes dropdown when hidden is true', () => {
+    const { container, rerender } = render(
+      <FilterDropdown
+        eventType={[]}
+        onTypeChange={() => {}}
+        distance="all"
+        onDistanceChange={() => {}}
+        hidden={false}
+      />
+    )
+
+    const wrapper = container.firstChild
+    expect(wrapper).not.toHaveClass('is-hidden')
+    expect(wrapper).not.toHaveStyle({ display: 'none' })
+
+    // Open dropdown
+    const triggerBtn = screen.getByRole('button', { name: /Filters/i })
+    fireEvent.click(triggerBtn)
+    expect(screen.getByTestId('filter-dropdown-menu')).toBeInTheDocument()
+
+    // Rerender with hidden=true
+    rerender(
+      <FilterDropdown
+        eventType={[]}
+        onTypeChange={() => {}}
+        distance="all"
+        onDistanceChange={() => {}}
+        hidden={true}
+      />
+    )
+
+    expect(wrapper).toHaveClass('is-hidden')
+    expect(wrapper).toHaveStyle({ display: 'none' })
+    expect(screen.queryByTestId('filter-dropdown-menu')).not.toBeInTheDocument()
+  })
 })
