@@ -3,8 +3,7 @@ import React, { useState, useEffect } from "react";
 import moment from "moment";
 import DatePick from "@/components/DatePick";
 import Location from "@/components/Location";
-import EventType from "@/components/EventType";
-import Distance from "@/components/Distance";
+import FilterDropdown from "@/components/FilterDropdown";
 import EventsList from "@/components/EventsList";
 import Ad from "@/components/Ad";
 import { mapDbEventToClient } from "@/components/utilities/mapEvent";
@@ -456,8 +455,12 @@ export default function MainDashboard({ children }) {
         <div className="center-column" ref={centerColRef}>
           <div className="filters">
             <Location onLocationChange={handleLocationChange} />
-            <EventType value={eventType} onChange={handleTypeChange} />
-            <Distance value={maxDistance} onChange={handleDistanceChange} />
+            <FilterDropdown
+              eventType={eventType}
+              onTypeChange={handleTypeChange}
+              distance={maxDistance}
+              onDistanceChange={handleDistanceChange}
+            />
           </div>
           <EventsList
             events={sortedEvents}

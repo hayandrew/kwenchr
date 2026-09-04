@@ -162,8 +162,8 @@ describe('MainDashboard Component', () => {
       expect(screen.getByText('Irish Pub Happy Hour')).toBeInTheDocument()
     })
 
-    // Open EventType filter dropdown (button label starts as "Event Types")
-    const filterBtn = screen.getByRole('button', { name: /Event Types/i })
+    // Open filter dropdown (button aria-label is "Filters")
+    const filterBtn = screen.getByRole('button', { name: /Filters/i })
     fireEvent.click(filterBtn)
 
     // Check "Comedy" checkbox to trigger filtering

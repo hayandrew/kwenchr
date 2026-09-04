@@ -39,6 +39,8 @@
   display: flex;
   align-items: stretch;
   width: 100%;
+  flex: 1;
+  min-width: 0;
   border-radius: 6px;
   overflow: visible;
 }
