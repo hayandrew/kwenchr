@@ -6,7 +6,12 @@ export async function GET(request, { params }) {
   try {
     await dbConnect()
     const { id } = await params
-    const user = await User.findById(id)
+    let user = null
+    try {
+      user = await User.findById(id)
+    } catch (err) {
+      if (err.name !== 'CastError') throw err
+    }
     if (!user) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 })
     }
@@ -21,7 +26,12 @@ export async function PUT(request, { params }) {
     await dbConnect()
     const { id } = await params
     const body = await request.json()
-    const updatedUser = await User.findOneAndUpdate({ _id: id }, body, { new: true })
+    let updatedUser = null
+    try {
+      updatedUser = await User.findOneAndUpdate({ _id: id }, body, { new: true })
+    } catch (err) {
+      if (err.name !== 'CastError') throw err
+    }
     if (!updatedUser) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 })
     }
@@ -44,8 +54,13 @@ export async function DELETE(request, { params }) {
   try {
     await dbConnect()
     const { id } = await params
-    const result = await User.deleteOne({ _id: id })
-    if (result.deletedCount === 0) {
+    let result = null
+    try {
+      result = await User.deleteOne({ _id: id })
+    } catch (err) {
+      if (err.name !== 'CastError') throw err
+    }
+    if (!result || result.deletedCount === 0) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 })
     }
     return NextResponse.json({ message: 'user successfully deleted' })
@@ -53,3 +68,4 @@ export async function DELETE(request, { params }) {
     return NextResponse.json({ error: error.message }, { status: 500 })
   }
 }
+

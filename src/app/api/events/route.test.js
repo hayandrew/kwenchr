@@ -110,7 +110,21 @@ describe('Events API Routes (/api/events)', () => {
       const body2 = await res2.json()
       expect(body2.map((e) => e.name)).toEqual(['Far Away Event'])
     })
+
+    it('filters events by promoter_id when provided in query parameters', async () => {
+      const mockList = [{ name: 'Promoter Event', promoter_id: 'promoter-123' }]
+      mockFind.mockResolvedValueOnce(mockList)
+
+      const request = new Request('http://localhost/api/events?promoter_id=promoter-123')
+      const response = await GET(request)
+      expect(response.status).toBe(200)
+
+      const body = await response.json()
+      expect(body).toEqual(mockList)
+      expect(mockFind).toHaveBeenCalledWith({ promoter_id: 'promoter-123' })
+    })
   })
+
 
   describe('POST', () => {
     it('creates and saves a new event with 201 status code', async () => {

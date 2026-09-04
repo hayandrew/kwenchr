@@ -37,7 +37,7 @@ export async function GET(request) {
   try {
     await dbConnect()
 
-    let page, limit, lat, lng
+    let page, limit, lat, lng, promoterId
     if (request && request.url) {
       try {
         const { searchParams } = new URL(request.url)
@@ -56,13 +56,23 @@ export async function GET(request) {
           const parsedLng = parseFloat(rawLng)
           if (!isNaN(parsedLng)) lng = parsedLng
         }
+
+        const rawPromoter =
+          searchParams.get('promoter_id') ??
+          searchParams.get('promoterId') ??
+          searchParams.get('userId')
+        if (rawPromoter) {
+          promoterId = rawPromoter
+        }
       } catch {
         // ignore invalid URL
       }
     }
 
+    const filter = promoterId ? { promoter_id: promoterId } : {}
+
     if (lat !== undefined && lng !== undefined) {
-      const allEvents = await Events.find({})
+      const allEvents = await Events.find(filter)
       const sortedEvents = [...allEvents].sort((a, b) => {
         const distA = calculateEventDistance(a, lat, lng)
         const distB = calculateEventDistance(b, lat, lng)
@@ -88,11 +98,11 @@ export async function GET(request) {
       const p = page || 1
       const l = limit || 10
       const skip = (p - 1) * l
-      const events = await Events.find({}).skip(skip).limit(l)
+      const events = await Events.find(filter).skip(skip).limit(l)
       return NextResponse.json(events)
     }
 
-    const events = await Events.find({})
+    const events = await Events.find(filter)
     return NextResponse.json(events)
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })

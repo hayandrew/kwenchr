@@ -63,7 +63,23 @@ describe('Dynamic Events API Route (/api/events/[id])', () => {
       const body = await response.json()
       expect(body.error).toBe('Connection failure')
     })
+
+    it('returns static fallback event when findById throws CastError or returns null for static UUID', async () => {
+      const castErr = new Error('Cast to ObjectId failed')
+      castErr.name = 'CastError'
+      mockFindById.mockRejectedValueOnce(castErr)
+
+      const staticParams = Promise.resolve({ id: '953844a8-a150-439c-9f60-8ecd57aa4353' })
+      const response = await GET(null, { params: staticParams })
+      expect(response.status).toBe(200)
+
+      const body = await response.json()
+      expect(body.title).toBe('Margarita Madness Monday')
+      expect(body.mgid).toBe('953844a8-a150-439c-9f60-8ecd57aa4353')
+    })
   })
+
+
 
   describe('PUT', () => {
     it('updates and returns the event successfully', async () => {
