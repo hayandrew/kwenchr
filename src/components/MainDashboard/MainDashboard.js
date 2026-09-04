@@ -90,6 +90,16 @@ export default function MainDashboard({ children }) {
   );
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [isLocationFocused, setIsLocationFocused] = useState(false);
+  const [isMobileNavHidden, setIsMobileNavHidden] = useState(false);
+
+  const lastScrollYRef = useRef(0);
+  const isLocationFocusedRef = useRef(isLocationFocused);
+  useEffect(() => {
+    isLocationFocusedRef.current = isLocationFocused;
+    if (isLocationFocused) {
+      setIsMobileNavHidden(false);
+    }
+  }, [isLocationFocused]);
 
   const userCoordsRef = useRef(userCoords);
   useEffect(() => {
@@ -396,6 +406,24 @@ export default function MainDashboard({ children }) {
           cachedScrollTop = scrollTop;
         }
 
+        // Handle mobile scroll hide/show
+        if (
+          typeof window !== "undefined" &&
+          window.innerWidth <= 767 &&
+          !isLocationFocusedRef.current
+        ) {
+          const prevScrollY = lastScrollYRef.current;
+          const diff = scrollTop - prevScrollY;
+          if (scrollTop <= 60) {
+            setIsMobileNavHidden(false);
+          } else if (diff > 10) {
+            setIsMobileNavHidden(true);
+          } else if (diff < -10) {
+            setIsMobileNavHidden(false);
+          }
+          lastScrollYRef.current = scrollTop;
+        }
+
         if (
           scrollHeight > clientHeight &&
           scrollHeight - scrollTop - clientHeight < 150
@@ -416,6 +444,22 @@ export default function MainDashboard({ children }) {
           cachedScrollTop = scrollTop;
         }
 
+        // Handle mobile scroll hide/show
+        if (window.innerWidth <= 767 && !isLocationFocusedRef.current) {
+          const prevScrollY = lastScrollYRef.current;
+          const diff = scrollTop - prevScrollY;
+          if (scrollTop <= 60) {
+            setIsMobileNavHidden(false);
+          } else if (diff > 10) {
+            setIsMobileNavHidden(true);
+          } else if (diff < -10) {
+            setIsMobileNavHidden(false);
+          }
+          lastScrollYRef.current = scrollTop;
+        } else if (window.innerWidth > 767) {
+          setIsMobileNavHidden(false);
+        }
+
         const scrollHeight = document.documentElement.scrollHeight;
         const clientHeight = window.innerHeight;
         if (
@@ -425,6 +469,12 @@ export default function MainDashboard({ children }) {
           loadMoreRef.current();
         }
       });
+    };
+
+    const handleResize = () => {
+      if (typeof window !== "undefined" && window.innerWidth > 767) {
+        setIsMobileNavHidden(false);
+      }
     };
 
     const centerEl = centerColRef.current;
@@ -437,11 +487,13 @@ export default function MainDashboard({ children }) {
       leftEl.addEventListener("scroll", handleScroll, { passive: true });
     }
     window.addEventListener("scroll", handleWindowScroll, { passive: true });
+    window.addEventListener("resize", handleResize, { passive: true });
 
     return () => {
       if (centerEl) centerEl.removeEventListener("scroll", handleScroll);
       if (leftEl) leftEl.removeEventListener("scroll", handleScroll);
       window.removeEventListener("scroll", handleWindowScroll);
+      window.removeEventListener("resize", handleResize);
       if (windowScrollRafId) {
         cancelAnimationFrame(windowScrollRafId);
       }
@@ -502,7 +554,9 @@ export default function MainDashboard({ children }) {
         <Ad extClass="hidden-sm-down" height="90" width="728" />
       </div>
 
-      <div className="main-content-wrapper">
+      <div
+        className={`main-content-wrapper ${isMobileNavHidden ? "mobile-nav-hidden" : ""}`.trim()}
+      >
         <div className="main-content-left" ref={leftWrapperRef}>
           {/* Modal Overlay Render Layer */}
           {children}

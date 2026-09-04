@@ -413,4 +413,35 @@ describe('MainDashboard Component', () => {
       expect(filterDropdown).not.toHaveStyle({ display: 'none' })
     })
   })
+
+  it('on mobile, hides datepicker and filters when scrolling down, and shows them when scrolling up', async () => {
+    const originalInnerWidth = window.innerWidth
+    window.innerWidth = 500
+
+    try {
+      render(<MainDashboard />)
+
+      const wrapper = document.querySelector('.main-content-wrapper')
+      expect(wrapper).not.toHaveClass('mobile-nav-hidden')
+
+      // Scroll down past the 60px threshold
+      window.scrollY = 200
+      fireEvent.scroll(window)
+
+      await waitFor(() => {
+        expect(wrapper).toHaveClass('mobile-nav-hidden')
+      })
+
+      // Scroll up by more than 10px
+      window.scrollY = 150
+      fireEvent.scroll(window)
+
+      await waitFor(() => {
+        expect(wrapper).not.toHaveClass('mobile-nav-hidden')
+      })
+    } finally {
+      window.innerWidth = originalInnerWidth
+      window.scrollY = 0
+    }
+  })
 })
