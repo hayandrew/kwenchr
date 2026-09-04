@@ -29,4 +29,17 @@ describe('Ad Component', () => {
     expect(containerDiv).toHaveClass('ad-container')
     expect(containerDiv.className.trim()).toBe('ad-container')
   })
+
+  it('renders responsive ad banner with 100% width when responsive prop is provided', () => {
+    const { container } = render(<Ad height={50} responsive />)
+    const containerDiv = container.firstChild
+    expect(containerDiv).toHaveClass('ad-responsive')
+    expect(screen.getByText('Responsive Ad')).toBeInTheDocument()
+
+    const holderDiv = container.querySelector('.ad-holder')
+    expect(holderDiv).toHaveStyle({
+      width: '100%',
+      height: '50px',
+    })
+  })
 })

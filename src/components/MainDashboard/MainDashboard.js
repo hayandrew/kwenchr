@@ -431,7 +431,7 @@ export default function MainDashboard({ children }) {
     <div className="wrapper">
       {/* Top Leaderboard Ad */}
       <div className="leaderboard-ad ad-wrapper">
-        <Ad extClass="hidden-md-up" height="50" width="320" />
+        <Ad extClass="hidden-md-up" height="50" responsive />
         <Ad extClass="hidden-sm-down" height="90" width="728" />
       </div>
 
