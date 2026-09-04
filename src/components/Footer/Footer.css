@@ -2,7 +2,6 @@ footer {
   background: var(--bg-secondary);
   border-top: 1px solid var(--border-color);
   color: var(--text-muted);
-  z-index: 1000;
   font-size: 11px;
 }
 
@@ -74,8 +73,6 @@ footer {
 
 @media (max-width: 767px) {
   footer {
-    position: relative;
     margin-top: auto;
-    z-index: 10;
   }
 }

@@ -42,7 +42,7 @@ export default function Distance({ value, onChange }) {
         onClick={() => setActive(!active)}
       >
         <i className="icon icon-map-marker-alt distance-icon" />
-        {/* <span>{selectedOption.label}</span> */}
+        <span>{selectedOption.label}</span>
         <i className="icon icon-chevron-down distance-chevron" />
       </button>
 

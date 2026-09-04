@@ -1,9 +1,12 @@
 header {
   background: var(--glass-bg);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--glass-border);
-  position: relative;
-  min-height: 62px;
+  position: sticky;
+  top: 0;
+  height: 72px;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: space-between;

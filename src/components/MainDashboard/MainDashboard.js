@@ -29,8 +29,6 @@ export function clearDashboardCache() {
 export default function MainDashboard({ children }) {
   const centerColRef = React.useRef(null);
   const leftWrapperRef = React.useRef(null);
-  const lastScrollYRef = React.useRef(0);
-  const [hideFilters, setHideFilters] = useState(false);
 
   const [currentDate, setCurrentDate] = useState(
     () => cachedCurrentDate || moment(),
@@ -154,10 +152,14 @@ export default function MainDashboard({ children }) {
         try {
           const coords = userCoordsRef.current;
           const geoQuery =
-            coords && typeof coords.lat === "number" && typeof coords.lng === "number"
+            coords &&
+            typeof coords.lat === "number" &&
+            typeof coords.lng === "number"
               ? `&lat=${coords.lat}&lng=${coords.lng}`
               : "";
-          const res = await dedupeFetch(`/api/events?page=1&limit=10${geoQuery}`);
+          const res = await dedupeFetch(
+            `/api/events?page=1&limit=10${geoQuery}`,
+          );
           if (res.ok && !isCancelled && reqId === requestIdRef.current) {
             const rawEvents = await res.json();
             const mapped = rawEvents.map(mapDbEventToClient);
@@ -294,7 +296,9 @@ export default function MainDashboard({ children }) {
     try {
       const coords = userCoordsRef.current;
       const geoQuery =
-        coords && typeof coords.lat === "number" && typeof coords.lng === "number"
+        coords &&
+        typeof coords.lat === "number" &&
+        typeof coords.lng === "number"
           ? `&lat=${coords.lat}&lng=${coords.lng}`
           : "";
       const res = await dedupeFetch(
@@ -335,16 +339,6 @@ export default function MainDashboard({ children }) {
           cachedScrollTop = scrollTop;
         }
 
-        const diff = scrollTop - lastScrollYRef.current;
-        if (scrollTop <= 30) {
-          setHideFilters(false);
-        } else if (diff > 8) {
-          setHideFilters(true);
-        } else if (diff < -8) {
-          setHideFilters(false);
-        }
-        lastScrollYRef.current = scrollTop;
-
         if (
           scrollHeight > clientHeight &&
           scrollHeight - scrollTop - clientHeight < 150
@@ -360,16 +354,6 @@ export default function MainDashboard({ children }) {
         if (scrollTop > 0) {
           cachedScrollTop = scrollTop;
         }
-
-        const diff = scrollTop - lastScrollYRef.current;
-        if (scrollTop <= 30) {
-          setHideFilters(false);
-        } else if (diff > 8) {
-          setHideFilters(true);
-        } else if (diff < -8) {
-          setHideFilters(false);
-        }
-        lastScrollYRef.current = scrollTop;
 
         const scrollHeight = document.documentElement.scrollHeight;
         const clientHeight = window.innerHeight;
@@ -445,62 +429,43 @@ export default function MainDashboard({ children }) {
   };
 
   return (
-    <div className="main-content">
+    <div className="wrapper">
+      {/* Top Leaderboard Ad */}
+      <div className="leaderboard-ad ad-wrapper">
+        <Ad extClass="hidden-md-up" height="50" width="320" />
+        <Ad extClass="hidden-sm-down" height="90" width="728" />
+      </div>
+
       <div className="main-content-wrapper">
         <div className="main-content-left" ref={leftWrapperRef}>
-          {/* Top Leaderboard Ad */}
-          <div className="leaderboard-ad ad-wrapper">
-            <Ad extClass="hidden-md-up" height="50" width="320" />
-            <Ad extClass="hidden-sm-down" height="90" width="728" />
+          {/* Modal Overlay Render Layer */}
+          {children}
+          {/* Left Sidebar Column */}
+          {currentDate && (
+            <DatePick currentDate={currentDate} updateDate={updateDate} />
+          )}
+          <div className="ad-wrapper hidden-sm-down">
+            <Ad
+              extClass="hidden-xl-up hidden-sm-down"
+              height="250"
+              width="300"
+            />
+            <Ad extClass="hidden-lg-down" height="280" width="336" />
           </div>
-
-          <div className="main-content-left-inner">
-            {/* Modal Overlay Render Layer */}
-            {children}
-
-            {/* Left Sidebar Column */}
-            <div className="left-column">
-              {currentDate && (
-                <DatePick currentDate={currentDate} updateDate={updateDate} />
-              )}
-
-              <div className="ad-wrapper hidden-sm-down">
-                <Ad
-                  extClass="hidden-xl-up hidden-sm-down"
-                  height="250"
-                  width="300"
-                />
-                <Ad extClass="hidden-lg-down" height="280" width="336" />
-              </div>
-            </div>
-
-            {/* Center Content Column */}
-            <div className="center-column" ref={centerColRef}>
-              <div
-                className={`columns filters ${hideFilters ? "filters-hidden" : ""}`.trim()}
-              >
-                <Location onLocationChange={handleLocationChange} />
-                <EventType value={eventType} onChange={handleTypeChange} />
-                <Distance value={maxDistance} onChange={handleDistanceChange} />
-              </div>
-
-              <EventsList
-                events={sortedEvents}
-                hasMore={hasMore}
-                isLoadingMore={isLoadingMore}
-                onLoadMore={loadMore}
-              />
-            </div>
-          </div>
-
-          {/* Bottom Leaderboard Ad */}
-          {/* <div className="leaderboard-ad ad-wrapper">
-            <Ad extClass="hidden-md-up" height="50" width="320" />
-            <Ad extClass="hidden-sm-down" height="90" width="728" />
-          </div> */}
         </div>
-
-        {/* Right Skyscraper Sidebar */}
+        <div className="center-column" ref={centerColRef}>
+          <div className="filters">
+            <Location onLocationChange={handleLocationChange} />
+            <EventType value={eventType} onChange={handleTypeChange} />
+            <Distance value={maxDistance} onChange={handleDistanceChange} />
+          </div>
+          <EventsList
+            events={sortedEvents}
+            hasMore={hasMore}
+            isLoadingMore={isLoadingMore}
+            onLoadMore={loadMore}
+          />
+        </div>
         <div className="main-content-right">
           <Ad
             extClass="hidden-xl-up hidden-md-down skyscraper-ad"

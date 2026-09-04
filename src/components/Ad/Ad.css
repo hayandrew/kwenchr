@@ -16,8 +16,8 @@
   }
   .leaderboard-ad.ad-wrapper {
     position: sticky;
-    top: 0;
-    z-index: 120;
+    top: 56px;
+    z-index: 990;
     margin: 0;
     padding: 3px 0;
     height: 56px;

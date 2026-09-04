@@ -57,7 +57,7 @@ export default function EventType({ value = [], onChange }) {
         onClick={() => setActive(!active)}
       >
         <i className="icon icon-filter event-type-icon" />
-        {/* <span>{selectedLabel}</span> */}
+        <span>{selectedLabel}</span>
         <i className="icon icon-chevron-down event-type-chevron" />
       </button>
 

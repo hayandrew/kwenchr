@@ -61,9 +61,9 @@ export default function Header() {
   }, [mobileNavOpen]);
 
   return (
-    <header className="columns">
+    <header>
       {/* Clickable Logo linking to Home */}
-      <Link href="/" className="column logo">
+      <Link href="/" className="logo">
         <div className="icon icon-kwenchr"></div>
       </Link>
 
@@ -73,23 +73,17 @@ export default function Header() {
         </h1>
       </div> */}
 
-      <div className="column profile-info">
+      <div className="profile-info">
         {user ? (
           <ProfileDropdown />
         ) : (
           <>
             {/* Desktop Auth Links */}
             <div className="desktop-auth-links">
-              <Link
-                href="/sign-in"
-                className="header-signin-link"
-              >
+              <Link href="/sign-in" className="header-signin-link">
                 Sign In
               </Link>
-              <Link
-                href="/create-account"
-                className="header-signup-link"
-              >
+              <Link href="/create-account" className="header-signup-link">
                 Create Account
               </Link>
             </div>
