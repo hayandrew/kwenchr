@@ -13,6 +13,7 @@ export default function Places({ onLocationChange }) {
   const [confirmedAddress, setConfirmedAddress] = useState("");
   const [placeholder, setPlaceholder] = useState("Choose Location...");
   const dropdownRef = useRef(null);
+  const inputRef = useRef(null);
 
   useEffect(() => {
     const checkLocationStorage = () => {
@@ -106,14 +107,16 @@ export default function Places({ onLocationChange }) {
     }
   };
 
-  const handleUseCurrentLocation = () => {
+  const handleUseCurrentLocation = (shouldBlur = true) => {
     setSuggestions([]);
     setAddress("");
     setConfirmedAddress("");
     setPlaceholder("Current Location");
-    setIsFocused(false);
-    if (typeof document !== "undefined" && document.activeElement) {
-      document.activeElement.blur();
+    if (shouldBlur) {
+      setIsFocused(false);
+      if (typeof document !== "undefined" && document.activeElement) {
+        document.activeElement.blur();
+      }
     }
 
     if (typeof window !== "undefined" && navigator.geolocation) {
@@ -247,7 +250,11 @@ export default function Places({ onLocationChange }) {
       e.preventDefault();
       e.stopPropagation();
     }
-    handleUseCurrentLocation();
+    handleUseCurrentLocation(false);
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
+    setIsFocused(true);
   };
 
   return (
@@ -255,11 +262,12 @@ export default function Places({ onLocationChange }) {
       <div className="search-bar-container">
         <div className="input-wrapper search-input-container">
           <input
+            ref={inputRef}
             type="text"
             value={address}
             onChange={handleChange}
             onKeyDown={handleKeyDown}
-            placeholder={isFocused ? "" : placeholder}
+            placeholder={placeholder}
             onFocus={() => setIsFocused(true)}
             onBlur={() => setIsFocused(false)}
             className="search-input"

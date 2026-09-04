@@ -137,6 +137,7 @@ describe('Places Component', () => {
       const cached = JSON.parse(window.sessionStorage.getItem('kwenchr_location'))
       expect(cached.isCurrentLocation).toBe(true)
       expect(screen.getByPlaceholderText('Current Location')).toBeInTheDocument()
+      expect(document.activeElement).toBe(input)
     })
   })
 })
