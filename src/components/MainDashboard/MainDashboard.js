@@ -548,6 +548,9 @@ export default function MainDashboard({ children }) {
 
   return (
     <div className="wrapper">
+      {/* Modal Overlay Render Layer */}
+      {children}
+
       {/* Top Leaderboard Ad */}
       <div className="leaderboard-ad ad-wrapper">
         <Ad extClass="hidden-md-up" height="50" responsive />
@@ -558,8 +561,6 @@ export default function MainDashboard({ children }) {
         className={`main-content-wrapper ${isMobileNavHidden ? "mobile-nav-hidden" : ""}`.trim()}
       >
         <div className="main-content-left" ref={leftWrapperRef}>
-          {/* Modal Overlay Render Layer */}
-          {children}
           {/* Left Sidebar Column */}
           {currentDate && (
             <DatePick currentDate={currentDate} updateDate={updateDate} />
