@@ -14,6 +14,16 @@ export default function Places({ onLocationChange, onFocusChange }) {
   const [placeholder, setPlaceholder] = useState("Choose Location...");
   const dropdownRef = useRef(null);
   const inputRef = useRef(null);
+  const debounceTimerRef = useRef(null);
+  const searchRequestIdRef = useRef(0);
+
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     onFocusChange?.(isFocused);
@@ -60,12 +70,16 @@ export default function Places({ onLocationChange, onFocusChange }) {
     return () => window.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Handle typing input and fetch suggestions natively
-  const handleChange = async (e) => {
+  // Handle typing input and fetch suggestions with 200ms debounce
+  const handleChange = (e) => {
     const value = e.target.value;
     setAddress(value);
     setCoordinates({ lat: null, lng: null });
     setErrorMessage("");
+
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
 
     if (value.length <= 2) {
       setSuggestions([]);
@@ -73,45 +87,59 @@ export default function Places({ onLocationChange, onFocusChange }) {
       return;
     }
 
-    if (typeof window !== "undefined" && window.google && window.google.maps) {
-      try {
-        let AutocompleteSuggestion;
-        if (
-          window.google.maps.places &&
-          window.google.maps.places.AutocompleteSuggestion
-        ) {
-          AutocompleteSuggestion =
-            window.google.maps.places.AutocompleteSuggestion;
-        } else {
-          // Import new places library dynamically if not yet fully loaded
-          const library = await window.google.maps.importLibrary("places");
-          AutocompleteSuggestion = library.AutocompleteSuggestion;
-        }
+    const currentReqId = ++searchRequestIdRef.current;
 
-        // Fetch suggestions restricted to US cities
-        const response =
-          await AutocompleteSuggestion.fetchAutocompleteSuggestions({
-            input: value,
-            includedRegionCodes: ["US"],
-            includedPrimaryTypes: ["(cities)"],
-          });
+    debounceTimerRef.current = setTimeout(async () => {
+      if (typeof window !== "undefined" && window.google && window.google.maps) {
+        try {
+          let AutocompleteSuggestion;
+          if (
+            window.google.maps.places &&
+            window.google.maps.places.AutocompleteSuggestion
+          ) {
+            AutocompleteSuggestion =
+              window.google.maps.places.AutocompleteSuggestion;
+          } else {
+            // Import new places library dynamically if not yet fully loaded
+            const library = await window.google.maps.importLibrary("places");
+            AutocompleteSuggestion = library.AutocompleteSuggestion;
+          }
 
-        if (response && response.suggestions) {
-          setSuggestions(response.suggestions);
-          setActiveSuggestionIndex(-1);
-        } else {
-          setSuggestions([]);
-          setActiveSuggestionIndex(-1);
+          // Fetch suggestions restricted to US cities
+          const response =
+            await AutocompleteSuggestion.fetchAutocompleteSuggestions({
+              input: value,
+              includedRegionCodes: ["US"],
+              includedPrimaryTypes: ["(cities)"],
+            });
+
+          if (currentReqId !== searchRequestIdRef.current) {
+            return;
+          }
+
+          if (response && response.suggestions) {
+            setSuggestions(response.suggestions);
+            setActiveSuggestionIndex(-1);
+          } else {
+            setSuggestions([]);
+            setActiveSuggestionIndex(-1);
+          }
+        } catch (err) {
+          if (currentReqId === searchRequestIdRef.current) {
+            console.error("Error fetching autocomplete suggestions:", err);
+            setSuggestions([]);
+            setActiveSuggestionIndex(-1);
+          }
         }
-      } catch (err) {
-        console.error("Error fetching autocomplete suggestions:", err);
-        setSuggestions([]);
-        setActiveSuggestionIndex(-1);
       }
-    }
+    }, 200);
   };
 
   const handleUseCurrentLocation = (shouldBlur = true) => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+    ++searchRequestIdRef.current;
     setSuggestions([]);
     setAddress("");
     setConfirmedAddress("");
@@ -165,6 +193,10 @@ export default function Places({ onLocationChange, onFocusChange }) {
 
   // Handle suggestion select and perform geocoding natively via Google Maps Geocoder
   const handleSelect = async (suggestion) => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+    ++searchRequestIdRef.current;
     const selectedText =
       suggestion.placePrediction.text.toString() ||
       suggestion.placePrediction.text;

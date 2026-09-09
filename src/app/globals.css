@@ -26,18 +26,6 @@
   --glass-border: hsla(0, 0%, 100%, 0.08);
 }
 
-/* Custom Icon Fonts */
-@font-face {
-  font-family: "icons";
-  src: url("/font/icons.eot");
-  src:
-    url("/font/icons.eot?#iefix") format("eot"),
-    url("/font/icons.woff2") format("woff2"),
-    url("/font/icons.woff") format("woff"),
-    url("/font/icons.ttf") format("truetype"),
-    url("/font/icons.svg#icons") format("svg");
-}
-
 /* Resets */
 * {
   box-sizing: border-box;

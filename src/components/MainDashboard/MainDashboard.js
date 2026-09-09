@@ -398,13 +398,22 @@ export default function MainDashboard({ children }) {
     if (children) return;
 
     let windowScrollRafId = null;
+    let containerScrollRafId = null;
 
     const handleScroll = (e) => {
-      if (e.target && typeof e.target.scrollTop === "number") {
-        const { scrollTop, scrollHeight, clientHeight } = e.target;
-        if (scrollTop > 0) {
-          cachedScrollTop = scrollTop;
-        }
+      const target = e.target;
+      if (!target || typeof target.scrollTop !== "number") return;
+
+      const scrollTop = target.scrollTop;
+      if (scrollTop > 0) {
+        cachedScrollTop = scrollTop;
+      }
+
+      if (containerScrollRafId) return;
+
+      containerScrollRafId = requestAnimationFrame(() => {
+        containerScrollRafId = null;
+        const { scrollHeight, clientHeight } = target;
 
         // Handle mobile scroll hide/show
         if (
@@ -430,7 +439,7 @@ export default function MainDashboard({ children }) {
         ) {
           loadMoreRef.current();
         }
-      }
+      });
     };
 
     const handleWindowScroll = () => {
@@ -496,6 +505,9 @@ export default function MainDashboard({ children }) {
       window.removeEventListener("resize", handleResize);
       if (windowScrollRafId) {
         cancelAnimationFrame(windowScrollRafId);
+      }
+      if (containerScrollRafId) {
+        cancelAnimationFrame(containerScrollRafId);
       }
     };
   }, [children]);
@@ -595,6 +607,7 @@ export default function MainDashboard({ children }) {
             hasMore={hasMore}
             isLoadingMore={isLoadingMore}
             onLoadMore={loadMore}
+            userCoords={userCoords}
           />
         </div>
         <div className="main-content-right">

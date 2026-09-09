@@ -12,25 +12,76 @@ export function getDistanceKm(lat1, lon1, lat2, lon2) {
   return R * c
 }
 
-function calculateDistance(venueLocationStr) {
+let cachedUserCoords = null
+let cachedRawStr = null
+
+if (typeof window !== 'undefined') {
+  const updateCacheFromStorage = () => {
+    try {
+      const raw = sessionStorage.getItem('kwenchr_location')
+      if (raw) {
+        const parsed = JSON.parse(raw)
+        if (parsed?.coords?.latitude && parsed?.coords?.longitude) {
+          cachedRawStr = raw
+          cachedUserCoords = {
+            lat: parsed.coords.latitude,
+            lng: parsed.coords.longitude
+          }
+        }
+      } else {
+        cachedRawStr = null
+        cachedUserCoords = null
+      }
+    } catch {}
+  }
+  window.addEventListener('locationChange', updateCacheFromStorage)
+  window.addEventListener('storage', updateCacheFromStorage)
+}
+
+export function clearDistanceCache() {
+  cachedUserCoords = null
+  cachedRawStr = null
+}
+
+function calculateDistance(venueLocationStr, customCoords) {
   if (!venueLocationStr) return 'Distance unknown'
 
   // Default fallback center based on user's current IP-based location
   let userLat = 40.7796
   let userLng = -74.0238
 
-  if (typeof window !== 'undefined') {
-    const cachedStr = sessionStorage.getItem('kwenchr_location')
-    if (cachedStr) {
-      try {
-        const cached = JSON.parse(cachedStr)
-        if (cached.coords && cached.coords.latitude && cached.coords.longitude) {
-          userLat = cached.coords.latitude
-          userLng = cached.coords.longitude
+  if (
+    customCoords &&
+    typeof customCoords.lat === 'number' &&
+    typeof customCoords.lng === 'number'
+  ) {
+    userLat = customCoords.lat
+    userLng = customCoords.lng
+  } else if (typeof window !== 'undefined') {
+    try {
+      const cachedStr = sessionStorage.getItem('kwenchr_location')
+      if (cachedStr) {
+        if (cachedStr === cachedRawStr && cachedUserCoords) {
+          userLat = cachedUserCoords.lat
+          userLng = cachedUserCoords.lng
+        } else {
+          const cached = JSON.parse(cachedStr)
+          if (cached.coords && cached.coords.latitude && cached.coords.longitude) {
+            cachedRawStr = cachedStr
+            cachedUserCoords = {
+              lat: cached.coords.latitude,
+              lng: cached.coords.longitude
+            }
+            userLat = cachedUserCoords.lat
+            userLng = cachedUserCoords.lng
+          }
         }
-      } catch (e) {
-        console.error('Failed to parse location cache in calculateDistance', e)
+      } else {
+        cachedRawStr = null
+        cachedUserCoords = null
       }
+    } catch (e) {
+      console.error('Failed to parse location cache in calculateDistance', e)
     }
   }
 

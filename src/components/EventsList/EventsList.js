@@ -9,7 +9,8 @@ export default function EventsList({
   events = [],
   hasMore: propHasMore,
   isLoadingMore: propIsLoadingMore,
-  onLoadMore
+  onLoadMore,
+  userCoords
 }) {
   const [internalLimit, setInternalLimit] = useState(10)
   const [internalLoading, setInternalLoading] = useState(false)
@@ -67,7 +68,7 @@ export default function EventsList({
     <div className="events-list-wrapper">
       <ul className="events-list">
         {displayedEvents.map((event) => (
-          <Link key={event.mgid} href={`/event/${event.mgid}`} scroll={false} prefetch={false} className="event-item-link">
+          <Link key={event.mgid} href={`/event/${event.mgid}`} scroll={false} className="event-item-link">
             <li className="columns event-item" itemScope itemType="http://schema.org/Event">
               
               {/* Event Image */}
@@ -87,7 +88,7 @@ export default function EventsList({
               {/* Event Meta */}
               <div className="column event-meta-column">
                 <div className="meta-column">
-                  <div className="event-meta-distance">{calculateDistance(event.venue?.location)}</div>
+                  <div className="event-meta-distance">{calculateDistance(event.venue?.location, userCoords)}</div>
                   <h2 className="event-meta-title">{event.title}</h2>
                   <p className="event-meta-time">
                     <span itemProp="startDate" content={event.occurrence?.start_time}>
