@@ -96,61 +96,63 @@ export default function FilterDropdown({
           aria-label="Filter options"
           data-testid="filter-dropdown-menu"
         >
-          {/* Event Types Section */}
-          <div className="filter-section">
-            <div className="filter-section-header">Event Types</div>
-            <div className="filter-options-group">
-              {EVENT_TYPE_OPTIONS.map((opt) => {
-                const isChecked = eventType.includes(opt.value);
-                return (
-                  <label
-                    key={opt.value}
-                    className={`filter-option-label ${isChecked ? "is-checked" : ""}`.trim()}
-                  >
-                    <input
-                      type="checkbox"
-                      checked={isChecked}
-                      onChange={(e) =>
-                        handleCheckboxChange(opt.value, e.target.checked)
-                      }
-                      className="filter-checkbox"
-                    />
-                    <span>{opt.label}</span>
-                  </label>
-                );
-              })}
+          <div className="filter-sections-wrap">
+            {/* Event Types Section */}
+            <div className="filter-section">
+              <div className="filter-section-header">Event Types</div>
+              <div className="filter-options-group">
+                {EVENT_TYPE_OPTIONS.map((opt) => {
+                  const isChecked = eventType.includes(opt.value);
+                  return (
+                    <label
+                      key={opt.value}
+                      className={`filter-option-label ${isChecked ? "is-checked" : ""}`.trim()}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={(e) =>
+                          handleCheckboxChange(opt.value, e.target.checked)
+                        }
+                        className="filter-checkbox"
+                      />
+                      <span>{opt.label}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="filter-divider filter-divider-middle" />
+
+            {/* Distance Section */}
+            <div className="filter-section">
+              <div className="filter-section-header">Distance</div>
+              <div className="filter-options-group">
+                {DISTANCE_OPTIONS.map((opt) => {
+                  const isSelected = distance === opt.value;
+                  return (
+                    <label
+                      key={opt.value}
+                      className={`filter-option-label ${isSelected ? "is-selected" : ""}`.trim()}
+                    >
+                      <input
+                        type="radio"
+                        name="filter-distance-radio"
+                        value={opt.value}
+                        checked={isSelected}
+                        onChange={() => handleDistanceChange(opt.value)}
+                        className="filter-radio"
+                      />
+                      <span>{opt.label}</span>
+                    </label>
+                  );
+                })}
+              </div>
             </div>
           </div>
 
-          <div className="filter-divider" />
-
-          {/* Distance Section */}
-          <div className="filter-section">
-            <div className="filter-section-header">Distance</div>
-            <div className="filter-options-group">
-              {DISTANCE_OPTIONS.map((opt) => {
-                const isSelected = distance === opt.value;
-                return (
-                  <label
-                    key={opt.value}
-                    className={`filter-option-label ${isSelected ? "is-selected" : ""}`.trim()}
-                  >
-                    <input
-                      type="radio"
-                      name="filter-distance-radio"
-                      value={opt.value}
-                      checked={isSelected}
-                      onChange={() => handleDistanceChange(opt.value)}
-                      className="filter-radio"
-                    />
-                    <span>{opt.label}</span>
-                  </label>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className="filter-divider" />
+          <div className="filter-divider filter-divider-bottom" />
 
           {/* Done Button */}
           <div className="filter-actions">
