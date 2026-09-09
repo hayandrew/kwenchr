@@ -38,6 +38,7 @@ describe('GdprFooter Component', () => {
   })
 
   it('stores accepted consent and hides banner when clicking Accept All', () => {
+    window.dataLayer = []
     render(<GdprFooter />)
 
     const acceptBtn = screen.getByRole('button', { name: /accept all/i })
@@ -50,10 +51,18 @@ describe('GdprFooter Component', () => {
     expect(saved.location).toBe(true)
     expect(saved.analytics).toBe(true)
 
+    // Verify Google Consent Mode was updated to granted
+    const consentCall = window.dataLayer.find(
+      (item) => item[0] === 'consent' && item[1] === 'update'
+    )
+    expect(consentCall).toBeDefined()
+    expect(consentCall[2].analytics_storage).toBe('granted')
+
     expect(screen.queryByRole('region', { name: /cookie and privacy consent banner/i })).not.toBeInTheDocument()
   })
 
   it('stores rejected consent and hides banner when clicking Reject Non-Essential', () => {
+    window.dataLayer = []
     render(<GdprFooter />)
 
     const rejectBtn = screen.getByRole('button', { name: /reject non-essential/i })
@@ -65,6 +74,13 @@ describe('GdprFooter Component', () => {
     expect(saved.necessary).toBe(true)
     expect(saved.location).toBe(false)
     expect(saved.analytics).toBe(false)
+
+    // Verify Google Consent Mode was updated to denied
+    const consentCall = window.dataLayer.find(
+      (item) => item[0] === 'consent' && item[1] === 'update'
+    )
+    expect(consentCall).toBeDefined()
+    expect(consentCall[2].analytics_storage).toBe('denied')
 
     expect(screen.queryByRole('region', { name: /cookie and privacy consent banner/i })).not.toBeInTheDocument()
   })

@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect, useSyncExternalStore } from 'react'
 import Link from 'next/link'
+import { updateConsentMode } from '@/lib/analytics'
 import './GdprFooter.css'
 
 const CONSENT_KEY = 'kwenchr_gdpr_consent'
@@ -70,6 +71,26 @@ export default function GdprFooter() {
     }
   }, [])
 
+  // Synchronize Google Consent Mode with stored consent on load and on external changes
+  useEffect(() => {
+    const handleConsentChange = () => {
+      const current = getStoredConsent()
+      if (current && typeof current.analytics === 'boolean') {
+        updateConsentMode(current.analytics)
+      }
+    }
+
+    const initial = getStoredConsent()
+    if (initial && typeof initial.analytics === 'boolean') {
+      updateConsentMode(initial.analytics)
+    }
+
+    window.addEventListener('kwenchr:gdpr-consent-changed', handleConsentChange)
+    return () => {
+      window.removeEventListener('kwenchr:gdpr-consent-changed', handleConsentChange)
+    }
+  }, [])
+
   const saveConsent = (status, customPrefs) => {
     const payload = {
       status,
@@ -85,6 +106,8 @@ export default function GdprFooter() {
     } catch {
       // Storage unavailable
     }
+
+    updateConsentMode(payload.analytics)
 
     setManualOpen(false)
     setShowPreferences(false)

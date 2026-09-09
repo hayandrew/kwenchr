@@ -37,6 +37,10 @@ vi.mock('@/components/Toast', () => ({
   default: () => <div data-testid="mock-toast-container" />
 }))
 
+vi.mock('@next/third-parties/google', () => ({
+  GoogleAnalytics: ({ gaId }) => <div data-testid="mock-google-analytics" data-gaid={gaId} />,
+}))
+
 describe('RootLayout Component', () => {
   it('has correct static metadata configuration', () => {
     expect(metadata.title).toContain('kwenchr')
@@ -63,5 +67,22 @@ describe('RootLayout Component', () => {
     const script = screen.getByTestId('mock-google-script')
     expect(script).toBeInTheDocument()
     expect(script).toHaveAttribute('src', expect.stringContaining('maps.googleapis.com'))
+  })
+
+  it('renders GoogleAnalytics component when NEXT_PUBLIC_GA_ID is set', () => {
+    const originalGaId = process.env.NEXT_PUBLIC_GA_ID
+    process.env.NEXT_PUBLIC_GA_ID = 'G-6HFP6J1VPW'
+
+    render(
+      <RootLayout>
+        <div>Content</div>
+      </RootLayout>
+    )
+
+    const ga = screen.getByTestId('mock-google-analytics')
+    expect(ga).toBeInTheDocument()
+    expect(ga).toHaveAttribute('data-gaid', 'G-6HFP6J1VPW')
+
+    process.env.NEXT_PUBLIC_GA_ID = originalGaId
   })
 })
