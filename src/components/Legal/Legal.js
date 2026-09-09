@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Overlay from '@/components/Overlay'
+import './Legal.css'
 
 export default function Legal({ initialTab = 'terms' }) {
   const router = useRouter()
