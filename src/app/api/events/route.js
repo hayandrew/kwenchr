@@ -72,37 +72,46 @@ export async function GET(request) {
     const filter = promoterId ? { promoter_id: promoterId } : {}
 
     if (lat !== undefined && lng !== undefined) {
-      const allEvents = await Events.find(filter)
-      const sortedEvents = [...allEvents].sort((a, b) => {
-        const distA = calculateEventDistance(a, lat, lng)
-        const distB = calculateEventDistance(b, lat, lng)
-        if (distA !== distB) {
-          return distA - distB
+      let query = Events.find(filter)
+      if (typeof query?.lean === 'function') query = query.lean()
+      const allEvents = await query
+
+      // Schwartzian transform: compute distance and id once per event
+      const withDistance = (allEvents || []).map((event) => ({
+        event,
+        dist: calculateEventDistance(event, lat, lng),
+        id: (event._id || event.id || event.name || '').toString()
+      }))
+      withDistance.sort((a, b) => {
+        if (a.dist !== b.dist) {
+          return a.dist - b.dist
         }
-        const idA = (a._id || a.id || a.name || '').toString()
-        const idB = (b._id || b.id || b.name || '').toString()
-        return idA.localeCompare(idB)
+        return a.id.localeCompare(b.id)
       })
 
       if (page || limit) {
         const p = page || 1
         const l = limit || 10
         const skip = (p - 1) * l
-        return NextResponse.json(sortedEvents.slice(skip, skip + l))
+        return NextResponse.json(withDistance.slice(skip, skip + l).map((item) => item.event))
       }
 
-      return NextResponse.json(sortedEvents)
+      return NextResponse.json(withDistance.map((item) => item.event))
     }
 
     if (page || limit) {
       const p = page || 1
       const l = limit || 10
       const skip = (p - 1) * l
-      const events = await Events.find(filter).skip(skip).limit(l)
+      let query = Events.find(filter).skip(skip).limit(l)
+      if (typeof query?.lean === 'function') query = query.lean()
+      const events = await query
       return NextResponse.json(events)
     }
 
-    const events = await Events.find(filter)
+    let query = Events.find(filter)
+    if (typeof query?.lean === 'function') query = query.lean()
+    const events = await query
     return NextResponse.json(events)
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })

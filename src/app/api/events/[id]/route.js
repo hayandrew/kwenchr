@@ -10,7 +10,9 @@ export async function GET(request, { params }) {
 
     let event = null
     try {
-      event = await Events.findById(id)
+      let query = Events.findById(id)
+      if (typeof query?.lean === 'function') query = query.lean()
+      event = await query
     } catch (err) {
       if (err.name !== 'CastError') {
         throw err

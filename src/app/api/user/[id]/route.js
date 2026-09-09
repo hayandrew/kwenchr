@@ -8,7 +8,9 @@ export async function GET(request, { params }) {
     const { id } = await params
     let user = null
     try {
-      user = await User.findById(id)
+      let query = User.findById(id)
+      if (typeof query?.lean === 'function') query = query.lean()
+      user = await query
     } catch (err) {
       if (err.name !== 'CastError') throw err
     }

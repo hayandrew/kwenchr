@@ -5,7 +5,9 @@ import User from '@/models/User'
 export async function GET() {
   try {
     await dbConnect()
-    const users = await User.find({})
+    let query = User.find({})
+    if (typeof query?.lean === 'function') query = query.lean()
+    const users = await query
     return NextResponse.json(users)
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })

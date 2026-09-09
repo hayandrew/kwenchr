@@ -57,4 +57,9 @@ const EventsSchema = new Schema({
   }
 })
 
+// Database indexes for fast querying and sorting
+EventsSchema.index({ promoter_id: 1 })
+EventsSchema.index({ start_time: 1 })
+EventsSchema.index({ Created_date: -1 })
+
 export default mongoose.models.Events || mongoose.model('Events', EventsSchema)

@@ -27,26 +27,29 @@ async function dbConnect() {
     cached.conn = await cached.promise
 
     // Auto-seed if the database is empty (important for Vercel production deployments)
-    const Events = mongoose.models.Events || (await import('../models/Event')).default
-    const User = mongoose.models.User || (await import('../models/User')).default
+    if (!cached.seeded) {
+      const Events = mongoose.models.Events || (await import('../models/Event')).default
+      const User = mongoose.models.User || (await import('../models/User')).default
 
-    const eventCount = await Events.countDocuments()
-    if (eventCount === 0) {
-      console.log('Production database is empty. Auto-seeding initial data...')
-      
-      const { dummyUsers, dummyEvents } = await import('./seedData')
-      
-      const seededUsers = await User.insertMany(dummyUsers)
-      const eventsToInsert = dummyEvents.map((evt, idx) => {
-        const userIndex = idx % seededUsers.length
-        return {
-          ...evt,
-          promoter_id: seededUsers[userIndex]._id.toString()
-        }
-      })
-      
-      await Events.insertMany(eventsToInsert)
-      console.log(`Auto-seeding successful: created ${seededUsers.length} users and ${eventsToInsert.length} events.`)
+      const eventCount = await Events.countDocuments()
+      if (eventCount === 0) {
+        console.log('Production database is empty. Auto-seeding initial data...')
+        
+        const { dummyUsers, dummyEvents } = await import('./seedData')
+        
+        const seededUsers = await User.insertMany(dummyUsers)
+        const eventsToInsert = dummyEvents.map((evt, idx) => {
+          const userIndex = idx % seededUsers.length
+          return {
+            ...evt,
+            promoter_id: seededUsers[userIndex]._id.toString()
+          }
+        })
+        
+        await Events.insertMany(eventsToInsert)
+        console.log(`Auto-seeding successful: created ${seededUsers.length} users and ${eventsToInsert.length} events.`)
+      }
+      cached.seeded = true
     }
   } catch (e) {
     cached.promise = null
