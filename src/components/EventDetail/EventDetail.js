@@ -28,7 +28,9 @@ export default function EventDetail({ mgid }) {
           const raw = await res.json()
           setEvent(mapDbEventToClient(raw))
           
-          if (raw.promoter_id) {
+          if (raw.promoter_name) {
+            setPromoterName(raw.promoter_name)
+          } else if (raw.promoter_id) {
             try {
               const userRes = await fetch(`/api/user/${raw.promoter_id}`)
               if (userRes.ok) {

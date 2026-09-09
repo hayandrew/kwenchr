@@ -92,4 +92,38 @@ describe('EventDetail Component', () => {
       expect(screen.getByText('100 River Road')).toBeInTheDocument()
     })
   })
+
+  it('uses promoter_name directly from event response without making secondary user fetch', async () => {
+    const mockDbEvent = {
+      _id: 'test-direct-mgid',
+      name: 'Direct Promoter Event',
+      short_description: 'Fast loading event',
+      long_description: 'Loaded with promoter_name already attached by the server',
+      start_time: '2026-08-28T16:00:00',
+      end_time: '2026-08-28T19:00:00',
+      promoter_id: 'promoter-direct',
+      promoter_name: 'Bob Direct'
+    }
+
+    const fetchMock = vi.fn().mockImplementation((url) => {
+      if (url.includes('/api/events/test-direct-mgid')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockDbEvent),
+          clone: function() { return this; }
+        })
+      }
+      return Promise.reject(new Error('Should not call: ' + url))
+    })
+    global.fetch = fetchMock
+
+    render(<EventDetail mgid="test-direct-mgid" />)
+
+    await waitFor(() => {
+      expect(screen.getByText('Bob Direct')).toBeInTheDocument()
+    })
+
+    const userApiCalls = fetchMock.mock.calls.filter(([url]) => url && url.includes('/api/user/'))
+    expect(userApiCalls).toHaveLength(0)
+  })
 })

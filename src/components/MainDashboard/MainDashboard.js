@@ -228,7 +228,8 @@ export default function MainDashboard({ children }) {
           if (res.ok && !isCancelled && reqId === requestIdRef.current) {
             const rawEvents = await res.json();
             const mapped = rawEvents.map(mapDbEventToClient);
-            const sorted = sortBatchByDistance(mapped, coords);
+            const isGeoSorted = Boolean(coords && typeof coords.lat === "number" && typeof coords.lng === "number");
+            const sorted = isGeoSorted ? mapped : sortBatchByDistance(mapped, coords);
             cachedAllEvents = sorted;
             cachedPage = 1;
             const more = rawEvents.length === PAGE_SIZE;
@@ -295,7 +296,8 @@ export default function MainDashboard({ children }) {
         if (res.ok && reqId === requestIdRef.current) {
           const rawEvents = await res.json();
           const mapped = rawEvents.map(mapDbEventToClient);
-          const sorted = sortBatchByDistance(mapped, newCoords);
+          const isGeoSorted = Boolean(newCoords && typeof newCoords.lat === "number" && typeof newCoords.lng === "number");
+          const sorted = isGeoSorted ? mapped : sortBatchByDistance(mapped, newCoords);
           cachedAllEvents = sorted;
           cachedPage = 1;
           const more = rawEvents.length === PAGE_SIZE;
@@ -364,7 +366,8 @@ export default function MainDashboard({ children }) {
       if (res.ok && reqId === requestIdRef.current) {
         const rawEvents = await res.json();
         const mapped = rawEvents.map(mapDbEventToClient);
-        const sortedNext = sortBatchByDistance(mapped, coords);
+        const isGeoSorted = Boolean(coords && typeof coords.lat === "number" && typeof coords.lng === "number");
+        const sortedNext = isGeoSorted ? mapped : sortBatchByDistance(mapped, coords);
         setAllEvents((prev) => {
           const existingIds = new Set(prev.map((e) => e.mgid || e._id || e.id));
           const uniqueNext = sortedNext.filter(

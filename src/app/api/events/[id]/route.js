@@ -32,6 +32,23 @@ export async function GET(request, { params }) {
     if (!event) {
       return NextResponse.json({ message: 'Event not found' }, { status: 404 })
     }
+
+    if (event.promoter_id) {
+      try {
+        const User = (await import('@/models/User')).default
+        let userQuery = User.findById(event.promoter_id).select('username')
+        if (typeof userQuery?.lean === 'function') userQuery = userQuery.lean()
+        const promoterUser = await userQuery
+        if (promoterUser?.username) {
+          const eventData = typeof event.toObject === 'function' ? event.toObject() : { ...event }
+          eventData.promoter_name = promoterUser.username
+          return NextResponse.json(eventData)
+        }
+      } catch {
+        // Fallback to returning base event if promoter user lookup fails
+      }
+    }
+
     return NextResponse.json(event)
   } catch (error) {
     return NextResponse.json({ error: error.message }, { status: 500 })
