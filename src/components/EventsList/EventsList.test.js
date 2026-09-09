@@ -107,5 +107,24 @@ describe('EventsList Component', () => {
     rerender(<EventsList events={events} isLoadingMore={true} />)
     expect(screen.getByText('Loading more specials...')).toBeInTheDocument()
   })
+
+  it('sets loading="eager" on above-the-fold images and loading="lazy" on subsequent images', () => {
+    const events = Array.from({ length: 5 }, (_, i) => ({
+      mgid: `event-${i + 1}`,
+      title: `Event ${i + 1}`,
+      image: { url: `https://images.unsplash.com/photo-${i + 1}` },
+      occurrence: { start_time: '2026-08-28T17:00:00', end_time: '2026-08-28T20:00:00' },
+      venue: { location: '40.7796,-74.0238', name: 'Pub' }
+    }))
+
+    render(<EventsList events={events} />)
+    const images = screen.getAllByRole('img')
+    expect(images).toHaveLength(5)
+    expect(images[0]).toHaveAttribute('loading', 'eager')
+    expect(images[1]).toHaveAttribute('loading', 'eager')
+    expect(images[2]).toHaveAttribute('loading', 'eager')
+    expect(images[3]).toHaveAttribute('loading', 'lazy')
+    expect(images[4]).toHaveAttribute('loading', 'lazy')
+  })
 })
 

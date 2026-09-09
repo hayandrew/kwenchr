@@ -68,7 +68,7 @@ export default function EventsList({
   return (
     <div className="events-list-wrapper">
       <ul className="events-list">
-        {displayedEvents.map((event) => (
+        {displayedEvents.map((event, index) => (
           <Link key={event.mgid} href={`/event/${event.mgid}`} scroll={false} className="event-item-link">
             <li className="columns event-item" itemScope itemType="http://schema.org/Event">
               
@@ -80,6 +80,7 @@ export default function EventsList({
                   src={event.image?.url || '/images/default_event.jpg'} 
                   alt={event.title || 'Drink special event'}
                   sizes="110px"
+                  loading={index < 3 ? 'eager' : 'lazy'}
                   unoptimized={event.image?.url ? !event.image.url.includes('images.unsplash.com') && !event.image.url.startsWith('/') : false}
                 />
                 <div className="event-item-rating">
