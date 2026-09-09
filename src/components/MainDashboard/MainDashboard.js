@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
-import moment from "moment";
+import dayjs from "dayjs";
 import DatePick from "@/components/DatePick";
 import Location from "@/components/Location";
 import FilterDropdown from "@/components/FilterDropdown";
@@ -55,14 +55,16 @@ const getInitialCurrentDate = () => {
   if (typeof window !== "undefined") {
     try {
       const saved = sessionStorage.getItem("kwenchr_current_date");
-      if (saved && moment(saved, "YYYY-MM-DD", true).isValid()) {
-        const m = moment(saved);
-        cachedCurrentDate = m;
-        return m;
+      if (saved && /^\d{4}-\d{2}-\d{2}$/.test(saved)) {
+        const d = dayjs(saved);
+        if (d.isValid()) {
+          cachedCurrentDate = d;
+          return d;
+        }
       }
     } catch (e) {}
   }
-  return moment();
+  return dayjs();
 };
 
 const buildEventsQuery = (pageNumber, coords) => {
@@ -154,7 +156,7 @@ export default function MainDashboard({ children }) {
     if (currentDate) {
       filtered = allEvents.filter((e) => {
         if (!e.occurrence?.start_time) return false;
-        return moment(e.occurrence.start_time).isSame(currentDate, "day");
+        return dayjs(e.occurrence.start_time).isSame(currentDate, "day");
       });
       // Fallback: if date filter results in 0 events, show all events
       if (filtered.length === 0) {

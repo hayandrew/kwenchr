@@ -1,6 +1,6 @@
 import React from "react";
 import Datepicker from "react-datepicker";
-import moment from "moment";
+import dayjs from "dayjs";
 import "./DatePick.css";
 
 // Ref-forwarding Custom Input component for react-datepicker compatibility
@@ -51,19 +51,19 @@ export default function DatePick({ currentDate, updateDate }) {
     : null;
 
   const handleChange = (date) => {
-    const momentDate = moment(date);
-    updateDate(momentDate);
+    const dayjsDate = dayjs(date);
+    updateDate(dayjsDate);
   };
 
   const changeDate = (event) => {
     event.preventDefault();
     const type = event.currentTarget.value;
     let newDate;
-    const currentMoment = moment(currentDate);
+    const currentDay = dayjs(currentDate);
     if (type === "next") {
-      newDate = currentMoment.add(1, "days");
+      newDate = currentDay.add(1, "day");
     } else if (type === "prev") {
-      newDate = currentMoment.add(-1, "days");
+      newDate = currentDay.add(-1, "day");
     }
     handleChange(newDate.toDate());
   };

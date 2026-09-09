@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 import calculateDistance from '@/components/utilities/calculateDistance'
 import formatTime from '@/components/utilities/formatTime'
 import './EventsList.css'
@@ -73,11 +74,14 @@ export default function EventsList({
               
               {/* Event Image */}
               <div className="column event-image-column">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img 
+                <Image 
                   className="event-image" 
                   src={event.image?.url || '/images/default_event.jpg'} 
-                  alt="Drink special event" 
+                  alt={event.title || 'Drink special event'}
+                  width={110}
+                  height={80}
+                  sizes="110px"
+                  unoptimized={event.image?.url ? !event.image.url.includes('images.unsplash.com') && !event.image.url.startsWith('/') : false}
                 />
                 <div className="event-item-rating">
                   <i className="icon icon-heart"></i>

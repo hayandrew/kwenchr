@@ -1,5 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
 import Overlay from '@/components/Overlay'
 import formatTime from '@/components/utilities/formatTime'
 import calculateDistance from '@/components/utilities/calculateDistance'
@@ -99,11 +100,15 @@ export default function EventDetail({ mgid }) {
         {/* Inner Overlay Details */}
         <div className="inner-overlay">
           <div className="form-overlay form-images">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img 
-              alt="Drink special detail" 
+            <Image 
+              alt={event.title || 'Drink special detail'} 
               className="form-images__image" 
-              src={event.image?.url || '/images/default_event.jpg'} 
+              src={event.image?.url || '/images/default_event.jpg'}
+              width={600}
+              height={220}
+              priority
+              sizes="(max-width: 768px) 100vw, 600px"
+              unoptimized={event.image?.url ? !event.image.url.includes('images.unsplash.com') && !event.image.url.startsWith('/') : false}
             />
             <div className="form-button-row">
               <span className="btn btn-secondary btn-xs btn-form">Images</span>

@@ -2,7 +2,7 @@ import React from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import MainDashboard, { clearDashboardCache } from './MainDashboard'
-import moment from 'moment'
+import dayjs from 'dayjs'
 
 // Mock Google maps just in case it is requested by Places/Location subcomponents
 beforeEach(() => {
@@ -26,7 +26,7 @@ describe('MainDashboard Component', () => {
   })
 
   it('fetches events on mount and displays them', async () => {
-    const todayStr = moment().format('YYYY-MM-DD')
+    const todayStr = dayjs().format('YYYY-MM-DD')
     const mockEvents = [
       {
         _id: 'event-1',
@@ -69,7 +69,7 @@ describe('MainDashboard Component', () => {
   })
 
   it('fetches next 10 events from API when infinite scroll triggers', async () => {
-    const todayStr = moment().format('YYYY-MM-DD')
+    const todayStr = dayjs().format('YYYY-MM-DD')
     const page1Events = Array.from({ length: 10 }, (_, i) => ({
       _id: `event-${i + 1}`,
       name: `Special ${i + 1}`,
@@ -126,7 +126,7 @@ describe('MainDashboard Component', () => {
   })
 
   it('filters events by type selection', async () => {
-    const todayStr = moment().format('YYYY-MM-DD')
+    const todayStr = dayjs().format('YYYY-MM-DD')
     const mockEvents = [
       {
         _id: 'event-1',
@@ -178,7 +178,7 @@ describe('MainDashboard Component', () => {
   })
 
   it('preserves cached events and restores scroll position across instances', async () => {
-    const todayStr = moment().format('YYYY-MM-DD')
+    const todayStr = dayjs().format('YYYY-MM-DD')
     const mockEvents = [
       {
         _id: 'event-1',
@@ -221,7 +221,7 @@ describe('MainDashboard Component', () => {
   })
 
   it('fetches events and replaces existing events when location changes', async () => {
-    const todayStr = moment().format('YYYY-MM-DD')
+    const todayStr = dayjs().format('YYYY-MM-DD')
     const initialEvents = [
       {
         _id: 'initial-1',
@@ -324,7 +324,7 @@ describe('MainDashboard Component', () => {
   })
 
   it('requests events with lat and lng query params and renders closest events first across pagination', async () => {
-    const todayStr = moment().format('YYYY-MM-DD')
+    const todayStr = dayjs().format('YYYY-MM-DD')
     const page1Events = Array.from({ length: 10 }, (_, i) => ({
       _id: `close-event-${i + 1}`,
       name: `Close Special ${i + 1}`,
