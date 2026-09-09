@@ -75,11 +75,10 @@ export default function EventsList({
               {/* Event Image */}
               <div className="column event-image-column">
                 <Image 
+                  fill
                   className="event-image" 
                   src={event.image?.url || '/images/default_event.jpg'} 
                   alt={event.title || 'Drink special event'}
-                  width={110}
-                  height={80}
                   sizes="110px"
                   unoptimized={event.image?.url ? !event.image.url.includes('images.unsplash.com') && !event.image.url.startsWith('/') : false}
                 />
