@@ -42,7 +42,7 @@ export default function RootLayout({ children }) {
           <>
             <Script
               id="google-consent-default"
-              strategy="beforeInteractive"
+              strategy="afterInteractive"
               dangerouslySetInnerHTML={{
                 __html: `
                   window.dataLayer = window.dataLayer || [];

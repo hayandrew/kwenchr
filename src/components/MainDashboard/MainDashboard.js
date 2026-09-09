@@ -29,41 +29,11 @@ export function clearDashboardCache() {
 }
 
 const getInitialUserCoords = () => {
-  if (typeof window !== "undefined") {
-    try {
-      const cachedStr = sessionStorage.getItem("kwenchr_location");
-      if (cachedStr) {
-        const cached = JSON.parse(cachedStr);
-        if (
-          cached.coords &&
-          typeof cached.coords.latitude === "number" &&
-          typeof cached.coords.longitude === "number"
-        ) {
-          return {
-            lat: cached.coords.latitude,
-            lng: cached.coords.longitude,
-          };
-        }
-      }
-    } catch (e) {}
-  }
   return DEFAULT_COORDS;
 };
 
 const getInitialCurrentDate = () => {
   if (cachedCurrentDate) return cachedCurrentDate;
-  if (typeof window !== "undefined") {
-    try {
-      const saved = sessionStorage.getItem("kwenchr_current_date");
-      if (saved && /^\d{4}-\d{2}-\d{2}$/.test(saved)) {
-        const d = dayjs(saved);
-        if (d.isValid()) {
-          cachedCurrentDate = d;
-          return d;
-        }
-      }
-    } catch (e) {}
-  }
   return dayjs();
 };
 
@@ -107,6 +77,20 @@ export default function MainDashboard({ children }) {
   useEffect(() => {
     userCoordsRef.current = userCoords;
   }, [userCoords]);
+
+  // Restore date from sessionStorage after initial mount to avoid SSR hydration mismatch
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem("kwenchr_current_date");
+      if (saved && /^\d{4}-\d{2}-\d{2}$/.test(saved)) {
+        const d = dayjs(saved);
+        if (d.isValid()) {
+          cachedCurrentDate = d;
+          setCurrentDate(d);
+        }
+      }
+    } catch (e) {}
+  }, []);
 
   const requestIdRef = useRef(0);
 

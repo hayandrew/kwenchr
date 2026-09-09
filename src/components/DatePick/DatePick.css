@@ -8,7 +8,11 @@
   justify-content: center;
   width: calc(100% - 10px);
   margin-left: 10px;
-  background: linear-gradient(175deg, hsla(240, 18%, 15%, 0.9) 0%, hsla(240, 22%, 11%, 0.98) 100%);
+  background: linear-gradient(
+    175deg,
+    hsla(240, 18%, 15%, 0.9) 0%,
+    hsla(240, 22%, 11%, 0.98) 100%
+  );
   border: 1px solid var(--border-color);
   border-radius: 12px;
   padding: 18px 0 22px;
@@ -42,7 +46,6 @@
     -12px 12px 0 0 var(--border-color),
     -20px 26px 36px rgba(0, 0, 0, 0.75),
     0 0 30px hsla(265, 80%, 62%, 0.16);
-  transform: translateY(-2px);
 }
 
 /* NAVIGATION BUTTONS - CENTERED VERTICALLY IN THE BODY OF THE DATE */
@@ -191,7 +194,11 @@
   color: var(--text-primary);
   margin: 6px 0 10px 0;
   text-align: center;
-  background: linear-gradient(180deg, #ffffff 45%, hsla(240, 12%, 84%, 0.9) 100%);
+  background: linear-gradient(
+    180deg,
+    #ffffff 45%,
+    hsla(240, 12%, 84%, 0.9) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.45));

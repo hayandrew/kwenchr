@@ -17,6 +17,7 @@ const DateCustomInput = React.forwardRef(
       dayPadded,
       year,
       relativeLabel,
+      className,
       ...props
     },
     ref,
@@ -28,7 +29,8 @@ const DateCustomInput = React.forwardRef(
       tabIndex={0}
       role="button"
       aria-label={`Selected date: ${weekdayFull || weekday} ${monthFull || month} ${dayPadded || day}, ${year}. Click to change date`}
-      className="datepicker-input-display"
+      className={`datepicker-input-display ${className || ""}`.trim()}
+      suppressHydrationWarning
       {...props}
     >
       {/* Mobile inline view: compact horizontal bar (e.g. "Wed, Sep 9, 2026") */}

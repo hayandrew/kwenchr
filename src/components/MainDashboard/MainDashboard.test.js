@@ -444,4 +444,25 @@ describe('MainDashboard Component', () => {
       window.scrollY = 0
     }
   })
+
+  it('restores saved date from sessionStorage after mount', async () => {
+    window.sessionStorage.setItem('kwenchr_current_date', '2026-09-25')
+    global.fetch = vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve([]),
+      clone: function () {
+        return this
+      }
+    })
+
+    render(<MainDashboard />)
+
+    await waitFor(() => {
+      const dateDisplay = document.querySelector('.datepicker-input-display')
+      expect(dateDisplay).toHaveAttribute(
+        'aria-label',
+        expect.stringContaining('September 25, 2026')
+      )
+    })
+  })
 })
