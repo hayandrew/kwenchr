@@ -56,6 +56,8 @@ body {
       hsla(42, 70%, 45%, 0.08) 0%,
       transparent 40%
     );
+  background-attachment: fixed;
+  background-repeat: no-repeat;
 }
 
 a {
