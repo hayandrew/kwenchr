@@ -83,10 +83,6 @@ export default function EventsList({
                   loading={index < 3 ? 'eager' : 'lazy'}
                   unoptimized={event.image?.url ? !event.image.url.includes('images.unsplash.com') && !event.image.url.startsWith('/') : false}
                 />
-                <div className="event-item-rating">
-                  <i className="icon icon-heart"></i>
-                  <span>{event.rating || 0}</span>
-                </div>
               </div>
 
               {/* Event Meta */}

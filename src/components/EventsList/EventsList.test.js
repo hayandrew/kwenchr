@@ -52,9 +52,9 @@ describe('EventsList Component', () => {
     expect(screen.getByText('Happy Hour Special')).toBeInTheDocument()
     expect(screen.getByText('Taco Tuesday')).toBeInTheDocument()
 
-    // Check rating rendering
-    expect(screen.getByText('90')).toBeInTheDocument()
-    expect(screen.getByText('85')).toBeInTheDocument()
+    // Check rating is not rendered
+    expect(screen.queryByText('90')).not.toBeInTheDocument()
+    expect(screen.queryByText('85')).not.toBeInTheDocument()
 
     // Check short description rendering
     expect(screen.getByText('Half price drinks')).toBeInTheDocument()

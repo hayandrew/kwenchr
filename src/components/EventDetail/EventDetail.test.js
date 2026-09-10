@@ -1,7 +1,13 @@
 import React from 'react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import EventDetail from './EventDetail'
+import { showToast } from '@/components/Toast'
+
+vi.mock('@/components/Toast', () => ({
+  default: () => null,
+  showToast: vi.fn()
+}))
 
 describe('EventDetail Component', () => {
   beforeEach(() => {
@@ -78,8 +84,8 @@ describe('EventDetail Component', () => {
       expect(screen.getByText(/Short desc: Cheapest IPAs in Hoboken/)).toBeInTheDocument()
       expect(screen.getByText('Come try our selection of fine IPAs at 50% discount!')).toBeInTheDocument()
 
-      // Rating
-      expect(screen.getByText('Rating: 95')).toBeInTheDocument()
+      // Rating should not be rendered
+      expect(screen.queryByText(/Rating:/)).not.toBeInTheDocument()
 
       // Event types tags mapping
       expect(screen.getByText('Happy Hour, Comedy')).toBeInTheDocument()
@@ -125,5 +131,53 @@ describe('EventDetail Component', () => {
 
     const userApiCalls = fetchMock.mock.calls.filter(([url]) => url && url.includes('/api/user/'))
     expect(userApiCalls).toHaveLength(0)
+  })
+
+  it('renders a share button and copies event link to clipboard showing toast on click', async () => {
+    const mockDbEvent = {
+      _id: 'test-share-mgid',
+      name: 'Shareable Event',
+      short_description: 'Great party',
+      long_description: 'Come party with us',
+      start_time: '2026-08-28T16:00:00',
+      end_time: '2026-08-28T19:00:00',
+      promoter_id: 'promoter-123',
+      venue_name: 'Club Venue'
+    }
+
+    global.fetch = vi.fn().mockImplementation((url) => {
+      if (url.includes('/api/events/test-share-mgid')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve(mockDbEvent),
+          clone: function() { return this; }
+        })
+      }
+      return Promise.resolve({
+        ok: true,
+        json: () => Promise.resolve({ username: 'Promoter' })
+      })
+    })
+
+    const writeTextMock = vi.fn().mockResolvedValue(undefined)
+    Object.assign(navigator, {
+      clipboard: {
+        writeText: writeTextMock
+      }
+    })
+
+    render(<EventDetail mgid="test-share-mgid" />)
+
+    await waitFor(() => {
+      expect(screen.getByRole('button', { name: /share/i })).toBeInTheDocument()
+    })
+
+    const shareButton = screen.getByRole('button', { name: /share/i })
+    fireEvent.click(shareButton)
+
+    await waitFor(() => {
+      expect(writeTextMock).toHaveBeenCalledWith(expect.stringContaining('/event/test-share-mgid'))
+      expect(showToast).toHaveBeenCalledWith('Copied to clipboard!')
+    })
   })
 })

@@ -6,6 +6,7 @@ import formatTime from '@/components/utilities/formatTime'
 import calculateDistance from '@/components/utilities/calculateDistance'
 import { mapDbEventToClient } from '@/components/utilities/mapEvent'
 import dedupeFetch from '@/components/utilities/dedupeFetch'
+import { showToast } from '@/components/Toast'
 import './EventDetail.css'
 
 export default function EventDetail({ mgid }) {
@@ -56,6 +57,40 @@ export default function EventDetail({ mgid }) {
       fetchEvent()
     }
   }, [mgid])
+
+  const handleShare = async () => {
+    const url = typeof window !== 'undefined'
+      ? (window.location.href.includes('/event/') ? window.location.href : `${window.location.origin}/event/${event?.mgid || event?.id || mgid}`)
+      : `/event/${event?.mgid || event?.id || mgid}`
+
+    let copied = false
+    if (typeof navigator !== 'undefined' && navigator.clipboard?.writeText) {
+      try {
+        await navigator.clipboard.writeText(url)
+        copied = true
+      } catch (err) {
+        // Fallback to execCommand below
+      }
+    }
+
+    if (!copied && typeof document !== 'undefined') {
+      try {
+        const textArea = document.createElement('textarea')
+        textArea.value = url
+        textArea.style.position = 'fixed'
+        textArea.style.opacity = '0'
+        document.body.appendChild(textArea)
+        textArea.focus()
+        textArea.select()
+        document.execCommand('copy')
+        document.body.removeChild(textArea)
+      } catch (err) {
+        console.error('Failed to copy to clipboard', err)
+      }
+    }
+
+    showToast('Copied to clipboard!')
+  }
 
   if (loading) {
     return (
@@ -115,11 +150,32 @@ export default function EventDetail({ mgid }) {
           </div>
 
           <div className="event-rating-row">
-            <button className="btn btn-primary fav-button">
-              <i className="icon icon-heart"></i>
-              <span className="rating-number">Rating: {event.rating || 0}</span>
+            <button
+              type="button"
+              className="btn btn-primary share-button"
+              onClick={handleShare}
+              aria-label="Share event"
+            >
+              <svg
+                className="share-icon"
+                width="15"
+                height="15"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <circle cx="18" cy="5" r="3"></circle>
+                <circle cx="6" cy="12" r="3"></circle>
+                <circle cx="18" cy="19" r="3"></circle>
+                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+              </svg>
+              <span>Share</span>
             </button>
-            
+
             <div className="event-type-badge">
               Type: <strong>
                 {event.tags?.map(t => tagLabels[t] || t).join(', ') || 'Special'}
